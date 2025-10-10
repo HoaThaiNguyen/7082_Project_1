@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "@tailwindcss/cli": "^4.1.14",
+    "tailwindcss": "^4.1.14"
+  },
+
+  "scripts": {
+    "watch:css": "npx @tailwindcss/cli -i ./kairos/static/css/style.css -o ./kairos/static/dist/style.css --watch"
+  }
+}
