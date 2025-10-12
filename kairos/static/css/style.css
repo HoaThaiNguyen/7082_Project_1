@@ -1,1 +1,56 @@
 @import "tailwindcss";
+
+@config "../../../tailwind.config.js";
+
+@layer base {
+
+    h1 {
+        @apply font-bold mb-2 text-6xl
+    }
+
+    h2 {
+        @apply font-semibold text-4xl mb-1.5 
+    }
+
+    h3 {
+        @apply text-3xl mb-1 
+    }
+
+    h4 {
+        @apply text-2xl 
+    }
+
+    h5 {
+        @apply text-xl
+    }
+
+    h6 {
+        @apply text-lg
+    }
+
+    p {
+        @apply text-base
+    }
+
+    h1, h2, h3, h4, h5, h6, p {
+        @apply text-dark
+    }
+
+    .btn-primary {
+        @apply transition-colors duration-300 hover:from-blue-700 hover:to-purple-900 cursor-pointer bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg p-2 text-white w-full h-auto
+    }
+
+    .btn-secondary {
+        @apply transition-colors duration-300 cursor-pointer bg-dark hover:bg-gray-700 rounded-lg p-2 text-white w-full h-auto
+    }
+
+    .btn-nav {
+        @apply rounded-md px-4 py-2 text-lg text-dark bg-white border-dark border-2 hover:bg-gray-200 duration-300 transition-colors cursor-pointer
+    }
+
+    input {
+        @apply rounded-md text-lg px-2 py-1 w-full border border-dark focus:outline-none focus:ring-1 focus:ring-dark bg-white
+    }
+}
+
+/* 2:15 pm */

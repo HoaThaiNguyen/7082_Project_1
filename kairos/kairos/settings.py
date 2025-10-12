@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'events',
     # 'tailwind',
     # 'django_browser_reload', # used for live reload
 ]
@@ -123,6 +124,9 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
+
+# Automatically rename static files with hashes so browsers always fetch the newest version
+STATICFILES_STORAGE = "django.contrib.staticfiles.storage.ManifestStaticFilesStorage" 
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
