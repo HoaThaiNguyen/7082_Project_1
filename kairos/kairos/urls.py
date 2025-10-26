@@ -23,5 +23,6 @@ urlpatterns = [
     # path('', views.homepage),
     path('login/', views.login),
 
-    path('events/', include('events.urls'))
+    path('events/', include('events.urls')),
+    path('notifications/', include('notifications.urls'))
 ]

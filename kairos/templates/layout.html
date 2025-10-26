@@ -13,19 +13,44 @@
 
     <link rel="stylesheet" href="{% static 'dist/style.css' %}">
     <script src="{% static 'js/main.js' %}" defer></script>
-    <title>Layout Document</title>
+
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <title class="joemother">Layout Document</title>
+
+    {% csrf_token %}
+    <script>
+        // Grab the CSRF token from the hidden input Django generates
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    </script>
+
 </head>
 <body class="bg-light">
-    <nav class="bg-gradient-to-r from-primary-200 to-secondary p-4 flex flex-row justify-between items-center">
+    <nav class="bg-gradient-to-r from-primary-200 to-secondary y p-4 flex flex-row justify-between items-center relative">
         <div>
             <a href="/events" class="text-4xl">🏠</a>
             <button class="btn-nav">Create Event</button>
             <button class="btn-nav">Attend Event</button>
         </div>
         
-        <div class="flex flex-row space-x-4">
+        <div x-data="notificationsComponent()" class="flex flex-row space-x-4">
             <a href="/login" class="self-center text-white">Login (temporary link for testing will be removed)</a>
-            <button class="text-4xl cursor-pointer">🔔</button>
+
+            {% comment %} Notifications here {% endcomment %}
+            {% if user.is_authenticated %}
+                <button 
+                    @click="open = !open; if (open && notifications.length === 0) { load_notifications(); }"
+                    class="text-4xl cursor-pointer relative">
+                    
+                    <div x-show="has_unread" x-init="hasUnreadNotifications()" class="absolute top-0 right-0 w-3 h-3 rounded-full bg-notify"></div>🔔
+                </button>
+                
+               
+                {% include 'components/notifications_panel.html' %}
+                
+            {% endif %}
+            
             <div class="w-12 h-12 rounded-full bg-dark cursor-pointer">
         </div>
     </nav>
@@ -33,5 +58,66 @@
         {% block content %}
         {% endblock %}
     </main>
+
+    <script>
+        const notificationsComponent = () => ({
+            has_unread: false,
+            open: false,
+            notifications: [],
+            async load_notifications() {
+                const res = await fetch('/notifications/', {method: 'GET', headers: {'X-CSRFToken': csrfToken} });
+                if (res.ok) {
+                    const data = await res.json();
+                    console.log("notifications recieved", data);
+                    this.notifications = data;
+                } else {
+                    console.error('failed to load notifications');
+                }
+            },
+            async hasUnreadNotifications() {
+                const res = await fetch("/notifications/has-unread-notifications", {method: 'GET', headers: {'X-CSRFToken': csrfToken} });
+                if (res.ok) {
+                    const data = await res.json();
+                    console.log("HAS UNREAD: " +data.has_unread);
+                    this.has_unread = data.has_unread;
+                } else {
+                    console.error("Failed to check if there are any unread notifications");
+                    return false;
+                }
+            },
+            async clearNotifications(notifications) {
+                const res = await fetch("/notifications/clear", 
+                {method: "DELETE", headers: {
+                    'X-CSRFToken': csrfToken
+                } });
+                if (res.ok) {
+                    // clear notifications on the frontend side
+                    notifications.splice(0, notifications.length);
+                } else {
+                    console.error("Could not clear notifications");
+                }
+            },
+            async notificationClicked(notification) {
+                try {
+                    // mark notification as read if it isn't currently once clicking on it
+                    if (!notification.is_read) {
+                        const res = await fetch(`/notifications/mark-read/${notification.id}/`, 
+                        {method: 'POST', headers: {'X-CSRFToken': csrfToken} });
+
+                        if (res.ok) {
+                            notification.is_read = true // update front end side
+                        } else {
+                            console.error("Failed to mark notification as read");
+                        }
+                    }
+                    // redirect to notification url
+                    window.location.href = notification.url;
+                } catch (err) {
+                    console.error(err); 
+                    window.location.href = notification.url;
+                }
+            }
+        });
+    </script>
 </body>
 </html>

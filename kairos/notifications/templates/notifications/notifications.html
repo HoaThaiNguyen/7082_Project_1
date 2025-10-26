@@ -1,0 +1,21 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Notifications
+{% endblock %}
+
+{% block content %}
+    <section>
+        <h1>Notifications</h1>
+        {% for notification in notifications %}
+            <article>
+                <h1>{{notification.title}}</h1>
+                <p>From: <span>{{notification.from_uid}}</span>, To: <span>{{notification.to_uid}}</span>
+                <p>{{notification.description}}</p>
+                <p>Is read: {{notification.is_read}}</p>
+            </article>
+        {% empty %}
+            <h2>No notifications</h2>
+        {% endfor %}
+    </section>
+{% endblock %}

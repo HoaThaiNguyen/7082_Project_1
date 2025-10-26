@@ -14,7 +14,8 @@ content: [
             'secondary': '#38369A',
             'dark': '#15151A',
             'light': '#F3F0FF',
-            'notify': '#B31157'
+            'notify': '#B31157',
+            'notify-dark': "#A20046"
         },
     },
   },

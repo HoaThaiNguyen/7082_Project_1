@@ -1,0 +1,39 @@
+<div
+    x-data="{
+        open: false, 
+        action: null,
+        confirmAction() {
+            if (this.action) {
+                this.action();
+                this.open = false;
+            }
+        }
+    }"
+    x-show="open"
+    x-cloack
+    @keydown.escape.window="open = false"
+    @open-modal.window="if ($event.detail.id === '{{id}}') { 
+        open = true; 
+        title = $event.detail.title;
+        action=$event.detail.action || null; 
+    }"
+    id="{{ id|default:'modal' }}"
+    class="flex flex-col inset-0 items-center justify-center fixed backdrop-brightness-50 z-50"
+>
+    <div @click.away="open = false" class="w-3/4 max-w-[600px] min-w-[250px] py-2 px-4 bg-primary-100 rounded-md border-2 border-dark space-y-4">
+
+        <div class="text-7xl">{{icon|default:"⚠"}}</div>
+
+        <h2 class="text-white">{{title|default:"title"}}</h2>
+
+        {% block modal_content %}
+            <p class="text-white">{{content|default:"content"}}</p>
+        {% endblock %}
+
+        <div class="flex flex-row gap-8 pt-8">
+            <button @click="open = false" class="btn btn-light">Cancel</button>
+            <button @click="confirmAction()" class="btn btn-notify">Confirm</button>
+        </div>
+
+    </div>
+</div>

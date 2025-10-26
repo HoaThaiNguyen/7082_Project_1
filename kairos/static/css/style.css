@@ -3,25 +3,24 @@
 @config "../../../tailwind.config.js";
 
 @layer base {
-
     h1 {
-        @apply font-bold mb-2 text-6xl
+        @apply font-bold mb-2 md:text-6xl text-5xl
     }
 
     h2 {
-        @apply font-semibold text-4xl mb-1.5 
+        @apply font-semibold md:text-4xl text-3xl mb-1.5 
     }
 
     h3 {
-        @apply text-3xl mb-1 
+        @apply md:text-3xl text-2xl mb-1 
     }
 
     h4 {
-        @apply text-2xl 
+        @apply md:text-2xl text-xl 
     }
 
     h5 {
-        @apply text-xl
+        @apply md:text-xl text-lg
     }
 
     h6 {
@@ -36,21 +35,31 @@
         @apply text-dark
     }
 
+    .btn {
+        @apply cursor-pointer transition-colors duration-300 p-2 rounded-lg w-full h-auto 
+    }
+
     .btn-primary {
-        @apply transition-colors duration-300 hover:from-blue-700 hover:to-purple-900 cursor-pointer bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg p-2 text-white w-full h-auto
+        @apply hover:from-blue-700 hover:to-purple-900 bg-gradient-to-r from-blue-500 to-purple-600 text-white
     }
 
     .btn-secondary {
-        @apply transition-colors duration-300 cursor-pointer bg-dark hover:bg-gray-700 rounded-lg p-2 text-white w-full h-auto
+        @apply bg-dark hover:bg-gray-700 text-white
+    }
+
+    .btn-notify {
+        @apply bg-notify hover:bg-notify-dark text-white
+    }
+
+    .btn-light {
+        @apply bg-light hover:bg-gray-300 text-black
     }
 
     .btn-nav {
-        @apply rounded-md px-4 py-2 text-lg text-dark bg-white border-dark border-2 hover:bg-gray-200 duration-300 transition-colors cursor-pointer
+        @apply rounded-md px-4 py-2 text-lg text-dark bg-white border-dark border-2 hover:bg-gray-200
     }
 
     input {
         @apply rounded-md text-lg px-2 py-1 w-full border border-dark focus:outline-none focus:ring-1 focus:ring-dark bg-white
     }
 }
-
-/* 2:15 pm */
