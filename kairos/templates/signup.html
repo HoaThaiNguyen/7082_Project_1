@@ -1,0 +1,114 @@
+{% extends 'base_auth.html' %}
+
+{% block title %}Sign Up{% endblock %}
+
+{% block content %}
+<section class="min-h-screen flex items-center justify-center ">
+  <div class="w-full max-w-lg p-12 rounded-2xl shadow-2xl border border-gray-100 ">
+    <h1 class="text-4xl font-extrabold text-dark text-center mb-2">Kairos</h1>
+    <p class="text-gray-500 text-center mb-8">Your personal scheduling companion</p>
+
+    <h2 class="text-2xl font-semibold text-dark mb-6 text-center">Create an account</h2>
+
+    <div x-data="signupForm()" class="space-y-6">
+      <form @submit.prevent="submitSignup" class="space-y-6">
+        {% csrf_token %}
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Username</label>
+          <input
+            x-model="username"
+            type="text"
+            name="username"
+            placeholder="Enter a username"
+            class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-primary-100 focus:outline-none focus:border-primary-200 text-gray-800"
+            required
+          />
+        </div>
+      </br>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+          <input
+            x-model="email"
+            type="email"
+            name="email"
+            placeholder="you@example.com"
+            class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-primary-100 focus:outline-none focus:border-primary-200 text-gray-800"
+            required
+          />
+        </div>
+      </br>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+          <input
+            x-model="password"
+            type="password"
+            name="password"
+            placeholder="Choose a password"
+            class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-primary-100 focus:outline-none focus:border-primary-200 text-gray-800"
+            required
+          />
+        </div>
+
+        <p x-text="error" class="text-center text-red-500 text-sm" x-show="error"></p>
+        <p x-text="success" class="text-center text-green-600 text-sm font-semibold" x-show="success"></p>
+      </br>
+        <button
+          type="submit"
+          class="w-full bg-gradient-to-r from-primary-200 to-secondary text-white py-3 rounded-lg font-semibold text-lg hover:opacity-90 transition shadow-md"
+        >
+          Sign Up
+        </button>
+
+        <p class="text-center text-sm text-gray-600 mt-6">
+          Already have an account?
+          <a href="/login/" class="text-primary-100 font-medium hover:underline">Log in</a>
+        </p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<script>
+  function signupForm() {
+    return {
+      username: '',
+      email: '',
+      password: '',
+      error: '',
+      success: '',
+      async submitSignup() {
+        this.error = '';
+        this.success = '';
+        try {
+          const res = await fetch('/api/auth/signup/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              username: this.username,
+              email: this.email,
+              password: this.password
+            }),
+          });
+
+          if (!res.ok) {
+            const errData = await res.json();
+            this.error = errData.detail || 'Signup failed. Try a different username.';
+            return;
+          }
+
+          this.success = 'Account created successfully 🎉';
+          this.username = '';
+          this.email = '';
+          this.password = '';
+
+          // Redirect after delay
+          setTimeout(() => (window.location.href = '/login/'), 1500);
+        } catch (err) {
+          this.error = 'Server error. Please try again later.';
+        }
+      }
+    };
+  }
+</script>
+{% endblock %}

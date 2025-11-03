@@ -16,12 +16,24 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+
 from . import views
+from django.views.generic import RedirectView
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path('', views.homepage),
-    path('login/', views.login),
+    path('', RedirectView.as_view(url='/events/', permanent=False)),
+    path('login/', views.login_page, name='login'),
+    path('signup/', views.signup_page, name='signup'),
+    path('api/', include('events.api_urls')),
+    path('events/', views.events_page, name='events'),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
-    path('events/', include('events.urls'))
 ]
