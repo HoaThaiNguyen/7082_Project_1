@@ -15,15 +15,14 @@
     <script src="{% static 'js/main.js' %}" defer></script>
 
     <!-- Alpine.js -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
-    <title class="joemother">Layout Document</title>
 
     {% csrf_token %}
     <script>
         // Grab the CSRF token from the hidden input Django generates
         const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     </script>
+    <title>Layout Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 
 </head>
 <body class="bg-light">
@@ -35,10 +34,9 @@
         </div>
         
         <div x-data="notificationsComponent()" class="flex flex-row space-x-4">
-            <a href="/login" class="self-center text-white">Login (temporary link for testing will be removed)</a>
 
             {% comment %} Notifications here {% endcomment %}
-            {% if user.is_authenticated %}
+            {% comment %} {% if user.is_authenticated %}
                 <button 
                     @click="open = !open; if (open && notifications.length === 0) { load_notifications(); }"
                     class="text-4xl cursor-pointer relative">
@@ -49,10 +47,26 @@
                
                 {% include 'components/notifications_panel.html' %}
                 
-            {% endif %}
+            {% endif %} {% endcomment %}
             
-            <div class="w-12 h-12 rounded-full bg-dark cursor-pointer">
+        <div class="flex flex-row space-x-4" id="nav-buttons">
+
+            <button 
+                    @click="open = !open; if (open && notifications.length === 0) { load_notifications(); }"
+                    class="text-4xl cursor-pointer relative">
+                    
+                    <div x-show="has_unread" x-init="hasUnreadNotifications()" class="absolute top-0 right-0 w-3 h-3 rounded-full bg-notify"></div>🔔
+                </button>
+                
+               
+                {% include 'components/notifications_panel.html' %}
+                
+                <a id="loginLink" href="/login" class="btn-nav">Login</a>
+                <button id="logoutBtn" onclick="logoutUser()" 
+                        class="btn-nav transition hidden">Logout</button>
         </div>
+
+        
     </nav>
     <main>
         {% block content %}
@@ -119,5 +133,29 @@
             }
         });
     </script>
+    <script src="//unpkg.com/alpinejs" defer>
+    </script>
+    <script>
+        function logoutUser() {
+          console.log("Logging out...");
+          localStorage.removeItem('access');
+          localStorage.removeItem('refresh');
+          window.location.href = '/login/';
+        }
+      
+        document.addEventListener('DOMContentLoaded', () => {
+          const token = localStorage.getItem('access');
+          const loginLink = document.getElementById('loginLink');
+          const logoutBtn = document.getElementById('logoutBtn');
+      
+          if (token) {
+            loginLink.classList.add('hidden');
+            logoutBtn.classList.remove('hidden');
+          } else {
+            loginLink.classList.remove('hidden');
+            logoutBtn.classList.add('hidden');
+          }
+        });
+      </script>
 </body>
 </html>
