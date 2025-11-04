@@ -65,17 +65,14 @@
       Alpine.data("eventsPage", () => ({
         events: [],
         async init() {
-          // Step 1: Get the JWT token
           const token = localStorage.getItem("access");
   
-          // If user not logged in → redirect
           if (!token) {
             window.location.href = "/login/";
             return;
           }
   
           try {
-            // Step 2: Fetch events with JWT
             const res = await fetch("/api/events/", {
               headers: {
                 "Authorization": `Bearer ${token}`,
@@ -84,13 +81,12 @@
             });
   
             if (res.status === 401) {
-              // token expired — go back to login
               window.location.href = "/login/";
               return;
             }
   
             const data = await res.json();
-            this.events = data; // Alpine reactive variable
+            this.events = data; 
           } catch (err) {
             console.error("Error loading events:", err);
           }
