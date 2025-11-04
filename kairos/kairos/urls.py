@@ -26,6 +26,9 @@ from . import views
 from django.views.generic import RedirectView
 
 
+from django.conf import settings
+from django.conf.urls.static import static
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', RedirectView.as_view(url='/events/', permanent=False)),
@@ -37,5 +40,11 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
     path('events/', include('events.urls')),
-    path('notifications/', include('notifications.urls'))
+    path('notifications/', include('notifications.urls')),
+
+    path('api/', include('users.urls')),
+
+    path('busy/', include('schedules.urls')),
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
