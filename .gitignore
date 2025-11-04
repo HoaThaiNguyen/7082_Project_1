@@ -1,5 +1,14 @@
 node_modules/
+.DS_Store
+
+# Ignore Python cache files
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore log files
+*.log
+
+# Ignore virtual environments
 venv/
 env/
-.DS_Store
-__pycache__/
