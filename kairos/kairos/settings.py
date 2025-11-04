@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'events',
+    'users',
+    'schedules',
     # 'tailwind',
     # 'django_browser_reload', # used for live reload
 ]
@@ -124,6 +126,10 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
+
+MEDIA_URL = 'media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 
 # Automatically rename static files with hashes so browsers always fetch the newest version
 STATICFILES_STORAGE = "django.contrib.staticfiles.storage.ManifestStaticFilesStorage" 
