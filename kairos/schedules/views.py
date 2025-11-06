@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.utils import timezone
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -8,6 +9,7 @@ from .forms import BusyTimeForm
 # Create your views here.
 
 # @login_required
+# TODO: Clean up route
 def busy_times_view(request):
     user = request.user
     busy_times = BusyTime.objects.filter(user=user).order_by('day_of_week', 'start_time')
@@ -26,3 +28,12 @@ def busy_times_view(request):
         'form': form,
         'busy_times': busy_times,
     })
+
+# @login_required
+def availability_calendar(request, event_id):
+    context = {
+        "event_id": event_id,
+        "today": timezone.now().date(),
+    }
+    return render(request, "schedules/schedule.html", context)
+

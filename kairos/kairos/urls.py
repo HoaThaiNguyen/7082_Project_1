@@ -35,16 +35,16 @@ urlpatterns = [
     path('login/', views.login_page, name='login'),
     path('signup/', views.signup_page, name='signup'),
     path('api/', include('events.api_urls')),
+    path('event/', include('schedules.urls')),
     path('events/', views.events_page, name='events'),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-
     path('events/', include('events.urls')),
     path('notifications/', include('notifications.urls')),
 
     path('api/', include('users.urls')),
 
-    path('busy/', include('schedules.urls')),
+    # path('busy/', include('schedules.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

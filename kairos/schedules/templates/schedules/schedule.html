@@ -1,0 +1,101 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block title %}
+    Schedule
+{% endblock %}
+
+{% block head %}
+    <script src="{% static 'js/daypilot-javascript.min.js' %}"></script>
+    <style>
+    #schedule {
+      max-width: 950px;
+      margin: 2rem auto;
+      border-radius: 0.5rem;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .calendar_default_main { border: 1px solid #d1d5db; }
+    .calendar_default_cell {
+      background-color: #fff;
+      border: 1px solid #f1f5f9;
+      transition: background 0.15s;
+    }
+    .calendar_default_cell:hover {
+      background-color: #dbeafe;
+    }
+    .calendar_default_cell_selected {
+      background-color: #86efac !important; /* light green highlight */
+      border-color: #86efac;
+    }
+    .calendar_default_colheader_inner,
+    .calendar_default_rowheader_inner,
+    .calendar_default_corner {
+      background: #f9fafb;
+      color: #374151;
+      font-weight: 500;
+      border-color: #e5e7eb;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+  <section>
+      <h1 style="text-align:center;">Select Your Availability</h1>
+      <div id="schedule"></div>
+    
+        <script>
+        document.addEventListener("DOMContentLoaded", () => {
+          // Create a weekly calendar (Mon–Sun, 30-min slots)
+          const dp = new DayPilot.Calendar("schedule", {
+            viewType: "Week",
+            startDate: "{{ today|date:'Y-m-d' }}",
+            durationBarVisible: false,
+            cellDuration: 30,
+            businessBeginsHour: 8,
+            businessEndsHour: 22,
+            showNonBusiness: false,
+            timeRangeSelectedHandling: "JavaScript",
+            eventClickHandling: "Disabled",
+            eventMoveHandling: "Disabled",
+            eventResizeHandling: "Disabled",
+            headerLevels: 1,
+    
+            onTimeRangeSelected: (args) => {
+              // Toggle selection like When2Meet
+              const overlapping = dp.events.list.filter(e =>
+                e.start <= args.end && e.end >= args.start
+              );
+    
+              if (overlapping.length) {
+                // Deselect: remove existing slot
+                overlapping.forEach(e => dp.events.remove(e));
+              } else {
+                // Select: add green slot
+                const e = new DayPilot.Event({
+                  start: args.start,
+                  end: args.end,
+                  text: "",
+                  backColor: "#86efac",
+                  borderColor: "#86efac",
+                });
+                dp.events.add(e);
+              }
+    
+              dp.clearSelection();
+    
+              // Log selected ranges (for backend saving later)
+              const selected = dp.events.list.map(e => ({
+                start: e.start.value,
+                end: e.end.value,
+              }));
+              console.log("Selected slots:", selected);
+            },
+          });
+    
+          dp.init();
+        });
+      </script>
+  </section>
+{% endblock %}

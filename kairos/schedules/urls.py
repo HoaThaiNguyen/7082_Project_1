@@ -2,5 +2,5 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.busy_times_view, name='busy_times'),
+    path('<slug:event_id>/', views.availability_calendar, name='schedule'),
 ]
