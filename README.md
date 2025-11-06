@@ -4,7 +4,7 @@ A concise and descriptive title for your project
 
 ## Course Information
 
-Course: COMP7082 – Software Enginnering  
+Course: COMP7082 – Software Engineering  
 Instructor: Fatemeh Riahi  
 Term: Fall 2025  
 Institution: British Columbia Institute of Technology

@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@daypilot/daypilot-lite-javascript": "^4.8.1",
     "@tailwindcss/cli": "^4.1.14"
   },
   "scripts": {
