@@ -42,7 +42,7 @@ urlpatterns = [
     path('events/', include('events.urls')),
     path('notifications/', include('notifications.urls')),
 
-    path('api/', include('users.urls')),
+    path('users/', include('users.urls')),
 
     path('busy/', include('schedules.urls')),
 ]

@@ -11,6 +11,12 @@
         {% endblock %}
     </title>
 
+    {% load static %}
+
+    <!-- ✅ FullCalendar CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+
+    <!-- Any other shared CSS -->
     <link rel="stylesheet" href="{% static 'dist/style.css' %}">
     <script src="{% static 'js/main.js' %}" defer></script>
 
@@ -23,6 +29,8 @@
     </script>
     <title>Layout Document</title>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+
+    
 
 </head>
 
@@ -84,9 +92,9 @@
                     class="absolute right-0 mt-3 w-48 bg-white shadow-lg rounded-lg hidden z-50"
                 >
                     <!-- <ul class="flex flex-col text-gray-800"> -->
-                        <li><a href="/profile" class="block px-4 py-2 hover:bg-gray-100">Profile</a></li>
-                        <li><a href="/settings" class="block px-4 py-2 hover:bg-gray-100">Settings</a></li>
-                        <li><a href="/logout" class="block px-4 py-2 hover:bg-gray-100 text-red-500">Logout</a></li>
+                        <a href="/users/profile" class="block px-4 py-2 hover:bg-gray-100">Profile</a></li>
+                        <a href="/settings" class="block px-4 py-2 hover:bg-gray-100">Settings</a></li>
+                        <a href="/logout" class="block px-4 py-2 hover:bg-gray-100 text-red-500">Logout</a></li>
                     <!-- </ul> -->
                 </div>
                 <!-- <div
@@ -104,6 +112,9 @@
     </nav>
 
     <main>
+        <!-- ✅ FullCalendar JS (must come before your calendar script) -->
+        <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+
         {% block content %}
         {% endblock %}
     </main>
