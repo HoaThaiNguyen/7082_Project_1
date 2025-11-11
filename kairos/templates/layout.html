@@ -11,6 +11,9 @@
         {% endblock %}
     </title>
 
+    <!-- ✅ FullCalendar CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+
     <link rel="stylesheet" href="{% static 'dist/style.css' %}">
     <script src="{% static 'js/main.js' %}" defer></script>
     <title>Layout Document</title>
@@ -65,6 +68,9 @@
     </nav>
 
     <main>
+         <!-- ✅ FullCalendar JS (must come before your calendar script) -->
+        <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+
         {% block content %}
         {% endblock %}
     </main>
