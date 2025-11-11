@@ -4,6 +4,7 @@
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js"></script>
 
 {% block content %}
+
     <h2>My Weekly Busy Times</h2>
 
     <form method="POST" class="mb-4">
@@ -13,20 +14,20 @@
     </form>
 
     <table border="1" cellpadding="8" style="border-collapse:collapse; text-align:center;">
-    <tr>
-        <th>Day</th>
-        <th>Time Range</th>
-        <th>Description</th>
-    </tr>
-    {% for busy in busy_times %}
-    <tr>
-        <td>{{ busy.get_day_of_week_display }}</td>
-        <td>{{ busy.start_time }} - {{ busy.end_time }}</td>
-        <td>{{ busy.description }}</td>
-    </tr>
-    {% empty %}
-    <tr><td colspan="3">No busy times yet.</td></tr>
-    {% endfor %}
+        <tr>
+            <th>Day</th>
+            <th>Time Range</th>
+            <th>Description</th>
+        </tr>
+        {% for busy in busy_times %}
+            <tr>
+                <td>{{ busy.get_day_of_week_display }}</td>
+                <td>{{ busy.start_time }} - {{ busy.end_time }}</td>
+                <td>{{ busy.description }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="3">No busy times yet.</td></tr>
+        {% endfor %}
     </table>
 
     <hr>
