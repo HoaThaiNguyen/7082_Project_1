@@ -1,0 +1,59 @@
+<!-- {% extends "layout.html" %}
+
+{% block content %}
+  <h2>{{ user.username }}'s Profile</h2>
+  {% if user.profile.avatar %}
+    <img src="{{ user.profile.avatar.url }}" alt="Avatar" width="150">
+  {% endif %}
+  <p><strong>Bio:</strong> {{ user.profile.bio }}</p>
+{% endblock %} -->
+
+{% extends 'layout.html' %}
+{% block title %}
+  Profile
+{% endblock %}
+
+{% block content %}
+<div class="flex justify-center mt-20">
+  <div class="bg-white shadow-lg rounded-2xl p-10 w-full max-w-lg">
+    <h2 class="text-3xl font-bold text-center mb-6">User Profile</h2>
+
+    <div id="profileInfo" class="text-lg text-gray-700 space-y-3">
+      <p><strong>Username:</strong> <span id="username"></span></p>
+      <p><strong>Email:</strong> <span id="email"></span></p>
+      <p><strong>First Name:</strong> <span id="first_name"></span></p>
+      <p><strong>Last Name:</strong> <span id="last_name"></span></p>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    const token = localStorage.getItem('access');
+    if (!token) {
+      window.location.href = '/login/';
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/profile/', {
+        headers: {
+          'Authorization': Bearer ${token},
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!res.ok) throw new Error('Unauthorized');
+      const data = await res.json();
+
+      document.getElementById('username').textContent = data.username;
+      document.getElementById('email').textContent = data.email;
+      document.getElementById('first_name').textContent = data.first_name  '—';
+      document.getElementById('last_name').textContent = data.last_name  '—';
+    } catch (err) {
+      console.error(err);
+      window.location.href = '/login/';
+    }
+  });
+</script>
+{% endblock %}
