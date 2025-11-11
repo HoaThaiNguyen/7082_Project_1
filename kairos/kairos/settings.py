@@ -94,9 +94,9 @@ TEMPLATES = [
     },
 ]
 
-LOGIN_URL = 'auth:login'
+LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'events:list'
-LOGOUT_REDIRECT_URL = 'auth:login'
+LOGOUT_REDIRECT_URL = 'login'
 
 WSGI_APPLICATION = 'kairos.wsgi.application'
 
