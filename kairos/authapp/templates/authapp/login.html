@@ -3,7 +3,25 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
-<section class="min-h-screen flex items-center justify-center bg-gradient-to-b from-light to-white">
+
+<div class="flex justify-center items-center min-h-screen bg-light">
+  <div class="p-8 bg-white rounded-xl shadow-lg w-full max-w-md">
+    <h1 class="text-3xl font-bold mb-4 text-center">Login to Kairos</h1>
+
+    <form method="POST">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="w-full bg-gradient-to-r from-primary-200 to-secondary text-white py-2 rounded-lg">Login</button>
+    </form>
+
+    <p class="text-center mt-4">Don’t have an account? 
+      <a href="{% url 'signup' %}" class="text-primary-100 font-medium hover:underline">Sign Up</a>
+    </p>
+  </div>
+</div>
+
+
+{% comment %} <section class="min-h-screen flex items-center justify-center bg-gradient-to-b from-light to-white">
   <div class="w-full max-w-lg p-12 rounded-2xl shadow-2xl border border-gray-100">
     <h1 class="text-4xl font-extrabold text-dark text-center mb-3">
       Welcome back to Kairos
@@ -55,9 +73,9 @@
       </form>
     </div>
   </div>
-</section>
+</section> {% endcomment %}
 
-<script>
+{% comment %} <script>
   function loginForm() {
     return {
       username: '',
@@ -89,5 +107,5 @@
       }
     };
   }
-</script>
+</script> {% endcomment %}
 {% endblock %}
