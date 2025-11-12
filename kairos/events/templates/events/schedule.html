@@ -1,0 +1,27 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block title %}Schedule{% endblock %}
+
+{% block head %}
+  <!-- External dependencies -->
+  <script src="{% static 'js/daypilot-javascript.min.js' %}"></script>
+  <link rel="stylesheet" href="{% static 'css/schedule.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="schedule-container">
+  <h1 class="schedule-title">Select Your Availability</h1>
+  <div id="schedule"></div>
+
+  <!-- Page-specific logic -->
+  <script src="{% static 'js/schedule.js' %}"></script>
+  <script>
+    // Initialize calendar after scripts load
+    document.addEventListener("DOMContentLoaded", () => {
+      const today = "{{ today|date:'Y-m-d' }}";
+      window.initScheduleCalendar(today);
+    });
+  </script>
+</section>
+{% endblock %}
