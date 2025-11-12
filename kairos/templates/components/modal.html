@@ -15,7 +15,7 @@
     @open-modal.window="if ($event.detail.id === '{{id}}') { 
         open = true; 
         title = $event.detail.title;
-        action=$event.detail.action || null; 
+        action= $event.detail.action || null; 
     }"
     id="{{ id|default:'modal' }}"
     class="flex flex-col inset-0 items-center justify-center fixed backdrop-brightness-50 z-50"
