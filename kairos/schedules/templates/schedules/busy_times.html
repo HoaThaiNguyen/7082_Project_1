@@ -4,13 +4,12 @@
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js"></script>
 
 {% block content %}
-
     <h2>My Weekly Busy Times</h2>
 
     <form method="POST" class="mb-4">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Add Busy Time</button>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Add Busy Time</button>
     </form>
 
     <table border="1" cellpadding="8" style="border-collapse:collapse; text-align:center;">
@@ -25,22 +24,14 @@
                 <td>{{ busy.start_time }} - {{ busy.end_time }}</td>
                 <td>{{ busy.description }}</td>
             </tr>
-            {% empty %}
+            {% empty %} 
             <tr><td colspan="3">No busy times yet.</td></tr>
         {% endfor %}
     </table>
 
     <hr>
     <h3>Weekly Calendar</h3>
-    <!-- <div id="calendar" style="display:grid; grid-template-columns: repeat(7, 1fr); gap:5px;">
-        {% with days=busy_times.model.DAYS_OF_WEEK %}
-        {% for day in days %}
-            <div style="border:1px solid #ccc; padding:5px;">
-            <strong>{{ day.1 }}</strong>
-            </div>
-        {% endfor %}
-        {% endwith %}
-    </div> -->
+
 
     <div id="calendar"></div>
 

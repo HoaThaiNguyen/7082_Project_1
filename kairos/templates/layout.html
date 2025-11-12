@@ -13,9 +13,12 @@
 
     <!-- ✅ FullCalendar CSS -->
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+    <!-- ✅ FullCalendar JS (must come before your calendar script) -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 
     <link rel="stylesheet" href="{% static 'dist/style.css' %}">
     <script src="{% static 'js/main.js' %}" defer></script>
+    
     <title>Layout Document</title>
 </head>
 
@@ -44,10 +47,8 @@
                 </button>
 
                 <!-- Dropdown Menu -->
-                <div 
-                    id="dropdown-menu" 
-                    class="absolute right-0 mt-3 w-48 bg-white shadow-lg rounded-lg hidden z-50"
-                >
+                <div id="dropdown-menu" 
+                    class="absolute right-0 mt-3 w-48 bg-white shadow-lg rounded-lg hidden z-50">
                     <!-- <ul class="flex flex-col text-gray-800"> -->
                         <li><a href="/users/profile" class="block px-4 py-2 hover:bg-gray-100">Profile</a></li>
                         <li><a href="/settings" class="block px-4 py-2 hover:bg-gray-100">Settings</a></li>
@@ -68,7 +69,7 @@
     </nav>
 
     <main>
-         <!-- ✅ FullCalendar JS (must come before your calendar script) -->
+        <!-- ✅ FullCalendar JS (must come before your calendar script) -->
         <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 
         {% block content %}
