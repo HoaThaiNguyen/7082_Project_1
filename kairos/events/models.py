@@ -4,21 +4,40 @@ from django.contrib.auth.models import User
 # Create your models here.
 
 # Note: Fields relate to specific form inputs
-#       egs: TextField -> textarea, CharField -> input of type text 
+#       egs: TextField -> textarea, CharField -> input of type text
+
 
 class Event(models.Model):
     title = models.CharField(max_length=75)
-    body = models.TextField() 
+    body = models.TextField()
     slug = models.SlugField()
-    date = models.DateTimeField(auto_now_add=True) # Date timestamp added every event creation
+    # Date timestamp added every event creation
+    date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.title
-    
-from django.db import models
-from django.contrib.auth.models import User
+
 
 # Create your models here.
+
+
+class Participation(models.Model):
+    STATUS_CHOICES = [
+        ('yes', 'Yes'),
+        ('no', 'No')
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    event = models.ForeignKey(
+        Event, on_delete=models.CASCADE, related_name='participations')
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES)
+
+    class Meta:
+        unique_together = ('user', 'event')  # user can only RSVP once
+
+    def __str__(self):
+        return f"{self.user.username} → {self.event.title} ({self.status})"
+
 
 class BusyTime(models.Model):
     DAYS_OF_WEEK = [
@@ -31,7 +50,8 @@ class BusyTime(models.Model):
         (6, 'Sunday'),
     ]
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='busy_times')
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='busy_times')
     day_of_week = models.IntegerField(choices=DAYS_OF_WEEK)
     start_time = models.TimeField()
     end_time = models.TimeField()
