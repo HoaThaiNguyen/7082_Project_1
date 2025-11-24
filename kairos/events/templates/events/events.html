@@ -8,28 +8,22 @@
 {% block content %}
     <div x-data="eventsComponent()" class="container mx-auto max-w-[1200px] px-8">
 
-        <div class="max-h-fit flex my-16 space-x-4 md:flex-row flex-col gap-y-4 md:gap-0">
-            <input @keydown.enter="loadEvents();" class=" rounded-lg w-full md:w-2/3" id="search" name="search" type="text" placeholder="Search Event"  />
-            
-            <div class="relative inline-block text-left">
-                <!-- Dropdown Button -->
-                <button id="dropdownButton" type="button" class="bg-secondary text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400 ">
-                    Filter (alphabetical) ↑
-                </button>
+        <form action="{% url 'events:list' %}" method="GET" class="max-h-fit flex mt-16 space-x-4 md:flex-row flex-col gap-y-4 md:gap-0">
+          {% csrf_token %}
+          {{ form }}
+          <input value="{{request.GET.search}}" @keydown.enter="loadEvents();" class=" rounded-lg w-full md:w-2/3" id="search" name="search" type="text" placeholder="Search Event"  />
 
-                <!-- Dropdown Menu -->
-                <div id="dropdownMenu" class="hidden absolute mt-2 md:w-56 rounded-md shadow-lg bg-secondary text-white z-10">
-                    <div class="py-1">
-                    <a href="#" class="block px-4 py-2 hover:bg-primary-200">Alphabetical</a>
-                    <a href="#" class="block px-4 py-2 hover:bg-primary-200">Most Recent</a>
-                    <a href="#" class="block px-4 py-2 hover:bg-primary-200">Most Popular</a>
-                    </div>
-                </div>
-            </div>
-            
-        </div>
+          <!-- Dropdown Menu -->
+          <select value="{{request.GET.sort}}" onchange="this.form.submit()" name="sort" id="sort" class="bg-secondary text-white z-10 p-3 rounded-md transition-colors duration-300 hover:border-secondary border-2 border-light cursor-pointer">
+              <option value="alphabetical-increasing" {% if request.GET.sort == "alphabetical-increasing"%}selected{% endif %}>Alphabetical Increasing</option>
+              <option value="alphabetical-decreasing" {% if request.GET.sort == "alphabetical-decreasing"%}selected{% endif %}>Alphabetical Decreasing</option>
 
-        <div class="max-h-[50vh] overflow-y-scroll space-y-8 pr-4">
+              <option value="most-recent" {% if request.GET.sort == "most-recent"%}selected{% endif %}>Most Recent</option>
+              <option value="least-recent" {% if request.GET.sort == "least-recent"%}selected{% endif %}>Least Recent</option>
+          </select>
+        </form>
+        
+        <div class="space-y-8 pr-4 py-12">
           {% if events %}
             {% for event in events %}
             <div class="flex items-start gap-4 p-4 bg-white rounded-xl shadow-sm w-full max-w-xl">
@@ -64,22 +58,27 @@
         </div>
     </div>
 
-    <script>
+    {% comment %} <script>
       const eventsComponent = () => ({
+        has_unread: false,
+        open: false,
+        notifications: [],
+
         async loadEvents() {
           console.log("Inside load events!");
+          
 
           const res = await fetch('/events/', {method: 'GET', headers: {'X-CSRFToken': csrfToken} });
-          //if (res.ok) {
-           //   const data = await res.json();
-           //   console.log("notifications recieved", data);
-           //   this.notifications = data;
-          //} else {
-          //    console.error('failed to load notifications');
-         // }
+          if (res.ok) {
+              const data = await res.json();
+              console.log("Events recieved", data);
+              this.event = data;
+          } else {
+              console.error('failed to load notifications');
+          }
         }
       });
-    </script>
+    </script> {% endcomment %}
     
     </div>
 

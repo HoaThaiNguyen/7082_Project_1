@@ -56,7 +56,7 @@
     }
 
     .btn-nav {
-        @apply rounded-md px-4 py-2 text-lg text-dark bg-white border-dark border-2 hover:bg-gray-200
+        @apply rounded-md px-4 py-2 text-sm md:text-lg text-dark bg-white border-dark border-2 hover:bg-gray-200
     }
 
     input {
