@@ -55,11 +55,14 @@ def rsvp_no(request, event_id):
 def event_detail(request, event_id):
     event = get_object_or_404(Event, id=event_id)
 
-    yes = Participation.objects.filter(event=event, status='yes')
-    no = Participation.objects.filter(event=event, status='no')
+    yes = Participation.objects.filter(
+        event=event, status='yes').select_related('user')
+    no = Participation.objects.filter(
+        event=event, status='no').select_related('user')
     responded_users = Participation.objects.filter(
         event=event).values_list('user_id', flat=True)
-    not_responded = User.objects.exclude(id__in=responded_users)
+    not_responded = User.objects.exclude(
+        id__in=responded_users).order_by('username')
 
     context = {
         'event': event,

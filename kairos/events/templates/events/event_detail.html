@@ -1,92 +1,76 @@
 {% extends 'layout.html' %}
 
-{% block title %}{{ event.title }}{% endblock %}
+{% block title %}Event Dashboard{% endblock %}
 
 {% block content %}
-<div class="max-w-3xl mx-auto mt-10 bg-white shadow p-8 rounded-xl">
 
-   
-    <h1 class="text-3xl font-bold mb-2 text-dark">{{ event.title }}</h1>
-    <p class="text-gray-700 mb-4">{{ event.body }}</p>
+<div class="max-w-4xl mx-auto mt-16 bg-white p-10 rounded-2xl shadow-xl">
 
-    <p class="text-sm text-gray-500 mb-8">
-        Date: {{ event.date }}
+  
+    <h1 class="text-3xl font-bold text-dark mb-2">{{ event.title }}</h1>
+    <p class="text-gray-600 mb-6">{{ event.body }}</p>
+
+    <p class="text-sm text-gray-400 mb-8">
+        Event date: {{ event.date }}
     </p>
 
+    <!-- ===== Dashboard ===== -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+        <!-- YES -->
+        <div class="p-4 rounded-xl border border-green-300 bg-green-50">
+            <h2 class="text-xl font-semibold text-green-700">Yes (Attending)</h2>
+            <ul class="mt-3 space-y-2">
+                {% for p in yes %}
+                    <li class="text-gray-700">{{ p.user.username }}</li>
+                {% empty %}
+                    <li class="text-gray-400">No confirmations yet</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- NO -->
+        <div class="p-4 rounded-xl border border-red-300 bg-red-50">
+            <h2 class="text-xl font-semibold text-red-700">No</h2>
+            <ul class="mt-3 space-y-2">
+                {% for p in no %}
+                    <li class="text-gray-700">{{ p.user.username }}</li>
+                {% empty %}
+                    <li class="text-gray-400">No declines yet</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- NOT RESPONDED -->
+        <div class="p-4 rounded-xl border border-gray-300 bg-gray-50">
+            <h2 class="text-xl font-semibold text-gray-700">Not Responded</h2>
+            <ul class="mt-3 space-y-2">
+                {% for user in not_responded %}
+                    <li class="text-gray-700">{{ user.username }}</li>
+                {% empty %}
+                    <li class="text-gray-400">Everyone responded</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+    </div>
+
     <!-- RSVP Buttons -->
-    <div class="flex space-x-4 mb-10">
+    <div class="mt-10 flex space-x-4">
         <a href="{% url 'events:rsvp_yes' event.id %}"
-           class="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
-            ✔ I'm coming
+           class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700">
+            I’m Attending
         </a>
 
         <a href="{% url 'events:rsvp_no' event.id %}"
-           class="px-5 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
-            ✖ Can't make it
+           class="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700">
+            I’m Not Attending
         </a>
     </div>
-
-    <hr class="my-10">
-
-    <!-- RSVP Dashboard -->
-    <h2 class="text-2xl font-bold text-dark mb-4">Attendance Dashboard</h2>
-
-    <!-- YES -->
-    <div class="mb-8">
-        <h3 class="text-xl font-semibold text-green-600 mb-2">
-            Coming ({{ yes.count }})
-        </h3>
-
-        {% if yes %}
-            <ul class="list-disc list-inside text-gray-700">
-                {% for p in yes %}
-                    <li>{{ p.user.username }}</li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p class="text-gray-500">No one has responded "Yes" yet.</p>
-        {% endif %}
-    </div>
-
-    <!-- NO -->
-    <div class="mb-8">
-        <h3 class="text-xl font-semibold text-red-600 mb-2">
-            Not Coming ({{ no.count }})
-        </h3>
-
-        {% if no %}
-            <ul class="list-disc list-inside text-gray-700">
-                {% for p in no %}
-                    <li>{{ p.user.username }}</li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p class="text-gray-500">No one has responded "No" yet.</p>
-        {% endif %}
-    </div>
-
-    <!-- NOT RESPONDED -->
-    <div class="mb-8">
-        <h3 class="text-xl font-semibold text-gray-600 mb-2">
-            No Response ({{ not_responded.count }})
-        </h3>
-
-        {% if not_responded %}
-            <ul class="list-disc list-inside text-gray-700">
-                {% for u in not_responded %}
-                    <li>{{ u.username }}</li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p class="text-gray-500">Everyone has responded.</p>
-        {% endif %}
-    </div>
-
-    <hr class="my-10">
-
     <a href="/events/" class="text-primary-200 underline hover:text-primary-100">
         ← Back to Events
     </a>
-
 </div>
+
 {% endblock %}
+
