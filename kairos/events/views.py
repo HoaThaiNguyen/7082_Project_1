@@ -1,14 +1,13 @@
-from django.shortcuts import render
-from .models import Event, BusyTime
-# from rest_framework.decorators import api_view, permission_classes
-# from rest_framework.permissions import IsAuthenticated
-# from rest_framework.response import Response
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Event, BusyTime, Participation
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+
 
 # Create your views here.
+
+
 @login_required(login_url='login')
 def events(request):
     events = Event.objects.all().order_by('-date')
@@ -29,3 +28,43 @@ def availability_calendar(request, event_id):
     }
     return render(request, "events/schedule.html", context)
 
+
+@login_required(login_url='/login/')
+def rsvp_yes(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    Participation.objects.update_or_create(
+        user=request.user,
+        event=event,
+        defaults={'status': 'yes'}
+    )
+    return redirect('events:event_detail', event_id=event.id)
+
+
+@login_required(login_url='/login/')
+def rsvp_no(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    Participation.objects.update_or_create(
+        user=request.user,
+        event=event,
+        defaults={'status': 'no'}
+    )
+    return redirect('events:event_detail', event_id=event.id)
+
+
+@login_required(login_url='/login/')
+def event_detail(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+
+    yes = Participation.objects.filter(event=event, status='yes')
+    no = Participation.objects.filter(event=event, status='no')
+    responded_users = Participation.objects.filter(
+        event=event).values_list('user_id', flat=True)
+    not_responded = User.objects.exclude(id__in=responded_users)
+
+    context = {
+        'event': event,
+        'yes': yes,
+        'no': no,
+        'not_responded': not_responded
+    }
+    return render(request, 'events/event_detail.html', context)
