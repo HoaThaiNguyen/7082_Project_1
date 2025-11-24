@@ -31,15 +31,17 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', RedirectView.as_view(url='/events/', permanent=False)),
+    # path('login/', views.login_page, name='login'),
+    # path('signup/', views.signup_page, name='signup'),
+    # path('api/', include('users.urls')),
+    # path('event/', include('schedules.urls')),
+    # path('events/', views.events_page, name='events'),
     # path('', RedirectView.as_view(url='/events/', permanent=False)),
     path('', include('authapp.urls')),
     path('events/', include('events.urls')),
 
     path('notifications/', include('notifications.urls')),
-
-    # path('api/', include('users.urls')),
-
-    path('busy/', include('schedules.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
