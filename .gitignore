@@ -37,3 +37,4 @@ env/
 
 # Common Django runtime files
 db.sqlite3
+kairos/static/dist/style.css
