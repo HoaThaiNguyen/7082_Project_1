@@ -2,3 +2,23 @@ node_modules/
 venv/
 env/
 .DS_Store
+
+
+# Django cache files
+/pycache/
+*.py[cod]
+*$py.class
+
+# SQLite database files
+*.sqlite
+*.sqlite3
+/.sqlite
+**/.sqlite3
+
+# Django cache directories
+/cache/
+/tmp/
+**/temp/
+
+# Common Django runtime files
+db.sqlite3
