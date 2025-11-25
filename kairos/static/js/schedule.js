@@ -17,6 +17,7 @@ function initScheduleCalendar(today) {
     eventMoveHandling: "Disabled",
     eventResizeHandling: "Disabled",
     headerLevels: 1,
+    eventsList: [],
 
     onTimeRangeSelected: (args) => {
       toggleSlot(dp, args);

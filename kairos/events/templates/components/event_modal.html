@@ -1,0 +1,73 @@
+{% extends "components/modal.html" %}
+
+{% block modal_content %}
+
+<form
+  method="POST"
+  action="/events/create/"
+  class="space-y-4"
+>
+  {% csrf_token %}
+
+  <div>
+    <label class="block text-sm font-semibold mb-1">Event Name</label>
+    <input
+      type="text"
+      name="title"
+      required
+      class="w-full border rounded-lg px-3 py-2"
+    >
+  </div>
+
+  <div>
+    <label class="block text-sm font-semibold mb-1">Description</label>
+    <textarea
+      name="description"
+      rows="3"
+      class="w-full border rounded-lg px-3 py-2"
+    ></textarea>
+  </div>
+
+  <div class="grid grid-cols-2 gap-4">
+    <div>
+      <label class="block text-sm font-semibold mb-1">Start</label>
+      <input
+        type="datetime-local"
+        name="start_time"
+        required
+        class="w-full border rounded-lg px-3 py-2"
+      >
+    </div>
+
+    <div>
+      <label class="block text-sm font-semibold mb-1">End</label>
+      <input
+        type="datetime-local"
+        name="end_time"
+        required
+        class="w-full border rounded-lg px-3 py-2"
+      >
+    </div>
+  </div>
+
+  <!-- Override default Confirm Button behavior -->
+  <div class="flex justify-end space-x-3 pt-6">
+    <button
+      type="button"
+      @click="$dispatch('close-modal', { id: 'create-event-modal' })"
+      class="btn btn-light"
+    >
+      Cancel
+    </button>
+
+    <button
+      type="submit"
+      class="btn btn-primary"
+    >
+      Create
+    </button>
+  </div>
+
+</form>
+
+{% endblock %}
