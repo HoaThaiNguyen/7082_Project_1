@@ -1,7 +1,7 @@
 node_modules/
 .DS_Store
 .idea/
-
+static/dist/style.css
 5.0
 
 # Ignore Python cache files
@@ -11,6 +11,8 @@ __pycache__/
 *.pyo
 *.py[cod]
 *$py.class
+
+
 
 # Ignore log files
 *.log
