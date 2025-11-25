@@ -21,7 +21,7 @@
        End: {{ event.end_date }} at {{ event.end_time }}
     </p>
 
-    <h4>Share the link to your friends: http://kairos.com/{{ event.slug }}</h4>
+    <h4>Share the link to your friends: http://kairos.com/{{ event.event_id }}</h4>
 
     <!-- RSVP Buttons -->
     <div class="flex space-x-4 mb-10">
@@ -36,7 +36,7 @@
         </a>
     </div>
     <div class="mb-10">
-    <button class="btn-nav"><a href="{% url 'events:schedule' event.slug %}" class="px-5 py-2 bg-blue-600 text-black rounded-lg hover:bg-blue-700 transition">📅 Set My Availability</a></button>
+    <button class="btn-nav"><a href="{% url 'events:schedule' event.event_id %}" class="px-5 py-2 bg-blue-600 text-black rounded-lg hover:bg-blue-700 transition">📅 Set My Availability</a></button>
     </div>    
 
  
