@@ -1,0 +1,55 @@
+<div>
+    <div
+        x-data="{
+            open: false, 
+            action: null,
+            confirmAction() {
+                if (this.action) {
+                    this.action();
+                    this.open = false;
+                }
+            }
+        }"
+        x-show="open"
+        x-cloack
+
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0 transform scale-0"
+        x-transition:enter-end="opacity-100 transform scale-100"
+        x-transition:leave="transition ease-in duration-300"
+        x-transition:leave-start="opacity-100 transform scale-100"
+        x-transition:leave-end="opacity-0 transform scale-0"
+
+        @keydown.escape.window="open = false"
+        @open-modal.window="if ($event.detail.id === '{{id}}') { 
+            open = true; 
+            title = $event.detail.title;
+            action= $event.detail.action || null; 
+        }"
+        id="{{ id|default:'modal' }}"
+        class="flex flex-col inset-0 items-center justify-center fixed"
+    >
+        <!-- overlay -->
+        <div class="w-full h-full inset-0 backdrop-brightness-50 z-40 absolute"></div>
+
+        <div 
+        @click.away="open = false"
+
+        class="w-3/4 max-w-[600px] min-w-[250px] py-2 px-4 bg-primary-100 rounded-md border-2 border-dark space-y-4 pb-4 z-50">
+
+            <div class="text-7xl">{{icon|default:"⚠"}}</div>
+
+            <h2 class="text-white">{{title|default:"title"}}</h2>
+
+            {% block modal_content %}
+                <p class="text-white">{{content|default:"content"}}</p>
+            {% endblock %}
+
+            <div class="flex flex-row gap-8 pt-8">
+                <button @click="open = false" class="btn btn-light">Cancel</button>
+                <button @click="confirmAction()" class="btn btn-notify">Confirm</button>
+            </div>
+
+        </div>
+    </div>
+</div>

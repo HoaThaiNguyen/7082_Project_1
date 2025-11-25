@@ -1,8 +1,27 @@
 node_modules/
+.DS_Store
+.idea/
+
+5.0
+
+# Ignore Python cache files
+__pycache__/
+/pycache/
+*.pyc
+*.pyo
+*.py[cod]
+*$py.class
+
+# Ignore log files
+*.log
+
+# Ignore virtual environments
 venv/
 env/
 .DS_Store
 
+
+# Django cache files
 /pycache/
 *.py[cod]
 *$py.class
@@ -17,3 +36,7 @@ env/
 /cache/
 /tmp/
 **/temp/
+
+# Common Django runtime files
+db.sqlite3
+kairos/static/dist/style.css

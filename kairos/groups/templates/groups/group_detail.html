@@ -1,0 +1,27 @@
+{% extends 'layout.html' %}
+
+{% block title %}Group: {{ group.name }}{% endblock %}
+
+{% block content %}
+<section class="min-h-screen flex items-center justify-center bg-gradient-to-b from-light to-white">
+  <div class="w-full max-w-xl bg-white p-10 rounded-2xl shadow-2xl border border-gray-100">
+    <h1 class="text-3xl font-extrabold text-dark mb-4">{{ group.name }}</h1>
+    <p class="text-sm text-gray-500 mb-4">
+      Owner: {{ group.owner.username }} • Created: {{ group.created_at|date:"M d, Y" }}
+    </p>
+
+    <h2 class="text-lg font-semibold mb-2">Members</h2>
+    {% if group.members.all %}
+      <ul class="space-y-1 mb-4">
+        {% for member in group.members.all %}
+          <li>- {{ member.username }}</li>
+        {% empty %}
+          <li class="text-gray-500">No members yet.</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    <a href="{% url 'group_list' %}" class="text-primary-100 hover:underline">← Back to groups</a>
+  </div>
+</section>
+{% endblock %}
