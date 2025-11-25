@@ -12,8 +12,6 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-
-
 # Ignore log files
 *.log
 
@@ -21,7 +19,6 @@ __pycache__/
 venv/
 env/
 .DS_Store
-
 
 # Django cache files
 /pycache/
@@ -46,8 +43,4 @@ kairos/static/dist/style.css
 # Python cache
 __pycache__/
 *.py[cod]
-
-# Optional (only if you want to ignore migrations themselves, NOT recommended usually)
-# **/migrations/
-# !**/migrations/__init__.py
 
