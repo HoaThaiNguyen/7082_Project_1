@@ -120,15 +120,28 @@
 
     <script>
         const createEventComponent = () => ({
+            generateSlug() {
+                const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+                event_id = "";
+                for (let i = 0; i < 16; i++) {
+                    event_id += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                console.log("event_id: ", event_id);
+                return event_id;
+            },
+
             open() {
+                const event_id = this.generateSlug()
                 window.dispatchEvent(new CustomEvent('open-modal', {
                     detail: {
                         id: 'create-event-modal',
                         title: 'Create New Event'
                     }
                 }));
-            }
+            },
+
         });
+
         const notificationsComponent = () => ({
             has_unread: false,
             hamburger_active: false,
