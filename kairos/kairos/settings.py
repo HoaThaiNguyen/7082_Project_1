@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'events',
-    'users',
+    'users.apps.UsersConfig',
     'schedules',
     # 'tailwind',
     # 'django_browser_reload', # used for live reload

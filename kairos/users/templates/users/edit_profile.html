@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+    <div style="display: flex; flex-direction: column; align-items: center; text-align: left; gap: 10px; margin-top: 20px;">
+
+        <!-- Avatar preview -->
+        <div style="width: 200px; height: 200px; background: #e5e7eb; 
+            display: flex; justify-content: center; align-items: center; 
+            border-radius: 10px; overflow: hidden;">
+            {% if user.profile.profile_picture %}
+                <img src="{{ user.profile.profile_picture.url }}" alt="Avatar" width="200">
+            {% else %}
+                <span class="text-gray-500">No Image</span>
+            {% endif %}
+        </div>
+
+        <!-- Edit Form -->
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="table">
+                <!-- Fields -->
+                <div for="id_nickname" class="font-semibold mb-1">Nickname</div>
+                <div>{{ form.nickname }}</div>
+     
+
+                <div for="id_bio" class="font-semibold mb-1">Bio</div>
+                <div style="align-items: left;"> {{ form.bio }} </div>
+          
+                
+                <div for="id_profile_picture" class="font-semibold mb-1">Profile Picture</div>
+                <div> {{ form.profile_picture }} </div>
+
+                <div> Allow others to see my schedule </div>
+                {{ form.is_calendar_public }}
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 20%">
+                Save
+            </button>
+        </form>
+
+    </div>
+
+{% endblock %}

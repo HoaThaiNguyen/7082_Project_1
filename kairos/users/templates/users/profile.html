@@ -1,9 +1,64 @@
 {% extends "layout.html" %}
 
 {% block content %}
-  <h2>{{ user.username }}'s Profile</h2>
-  {% if user.profile.avatar %}
-    <img src="{{ user.profile.avatar.url }}" alt="Avatar" width="150">
-  {% endif %}
-  <p><strong>Bio:</strong> {{ user.profile.bio }}</p>
+  <div style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; margin-top: 20px;">
+    <h2>Profile</h2>
+
+    <div style="width: 200px; height: 200px; background: #e5e7eb; 
+            display: flex; justify-content: center; align-items: center; 
+            border-radius: 10px; overflow: hidden;">
+      {% if user.profile.profile_picture %}
+        <img src="{{ user.profile.profile_picture.url }}" alt="Avatar" width="200">
+      {% else %}
+        <span class="text-gray-500">: )</span>
+      {% endif %}
+    </div>
+    
+    <div class="table">
+      <div class="label">Nickname:</div>
+      <div class="value">{{ user.profile.nickname }}</div>
+      <br>
+
+      <div class="label">Bio:</div>
+      <div class="value">{{ user.profile.bio }}</div>
+      <br>
+
+      <div class="label">Username:</div>
+      <div class="value">{{ user.username }}</div>
+      <br>
+
+      <div class="label">Schedule visibility:</div>
+      <div class="value">
+        {% if user.profile.is_calendar_public %}
+          On
+        {% else %}
+          Off
+        {% endif %}
+      </div>
+    </div>
+
+    <a href="{% url 'users:edit' %}" class="btn btn-primary" style="width: 10%">Edit Profile</a>
+
+    <style>
+    .profile-table {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        row-gap: 12px;
+        column-gap: 12px;
+        max-width: 50%;
+        margin: 0 auto; /* center */
+    }
+
+    .label {
+        font-weight: bold;
+        text-align: left;
+    }
+
+    .value {
+        text-align: left;
+    }
+    </style>
+
+  </div>
+
 {% endblock %}

@@ -31,38 +31,20 @@
         </div>
         
         <div class="flex flex-row space-x-4">
-            <a href="/login" class="self-center text-white">Login (temporary link for testing will be removed)</a>
+            <a href="/login" class="self-center text-white">Login</a>
             <button class="text-4xl cursor-pointer">🔔</button>
             
             <!-- Hamburger Menu -->
             <div class="relative">
-                <!-- Hamburger icon -->
-                <!-- <button id="menu-toggle" class="flex flex-col justify-between w-8 h-6 focus:outline-none cursor-pointer">
-                    <span class="block w-full h-1 bg-white rounded"></span>
-                    <span class="block w-full h-1 bg-white rounded"></span>
-                    <span class="block w-full h-1 bg-white rounded"></span>
-                </button> -->
-                <button id="menu-toggle" class="p-2">
+                <button id="menu-toggle" class="text-white text-4xl">
                     ☰
                 </button>
 
-                <!-- Dropdown Menu -->
-                <div id="dropdown-menu" 
-                    class="absolute right-0 mt-3 w-48 bg-white shadow-lg rounded-lg hidden z-50">
-                    <!-- <ul class="flex flex-col text-gray-800"> -->
-                        <li><a href="/users/profile" class="block px-4 py-2 hover:bg-gray-100">Profile</a></li>
-                        <li><a href="/settings" class="block px-4 py-2 hover:bg-gray-100">Settings</a></li>
-                        <li><a href="/logout" class="block px-4 py-2 hover:bg-gray-100 text-red-500">Logout</a></li>
-                    <!-- </ul> -->
+                <div id="dropdown-menu" class="absolute left-4 mt-3 w-48 bg-white shadow-lg rounded-lg hidden z-50">
+                    <a href="/users/profile" class="block px-4 py-2 hover:bg-gray-100">Profile</a></li>
+                    <a href="/settings" class="block px-4 py-2 hover:bg-gray-100">Settings</a></li>
+                    <a href="/logout" class="block px-4 py-2 hover:bg-gray-100 text-red-500">Logout</a></li>
                 </div>
-                <!-- <div
-                    id="dropdown-menu"
-                    class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg hidden"
-                >
-                    <a href="#" class="block px-4 py-2 hover:bg-gray-100">Profile</a>
-                    <a href="#" class="block px-4 py-2 hover:bg-gray-100">Settings</a>
-                    <a href="#" class="block px-4 py-2 hover:bg-gray-100">Logout</a>
-                </div> -->
             </div>
 
         </div>
