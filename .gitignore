@@ -40,3 +40,12 @@ env/
 # Common Django runtime files
 db.sqlite3
 kairos/static/dist/style.css
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Optional (only if you want to ignore migrations themselves, NOT recommended usually)
+# **/migrations/
+# !**/migrations/__init__.py
+
