@@ -10,13 +10,13 @@ urlpatterns = [
 
     # integer ID routes FIRST
     path('<slug:event_id>/', views.event_detail, name='event_detail'),
-    path('<int:event_id>/yes/', views.rsvp_yes, name='rsvp_yes'),
-    path('<int:event_id>/no/', views.rsvp_no, name='rsvp_no'),
-
+    path('<slug:event_id>/yes/', views.rsvp_yes, name='rsvp_yes'),
+    path('<slug:event_id>/no/', views.rsvp_no, name='rsvp_no'),
+    path('<slug:event_id>/availability', views.availability_calendar, name='schedule'),
     # slug routes AFTER so they don't steal integers
-    path('<slug:event_slug>/availability/load/',
+    path('<slug:event_id>/availability/load/',
          views.load_availability, name='load_availability'),
-    path('<slug:event_slug>/availability/save/',
+    path('<slug:event_id>/availability/save/',
          views.save_availability, name='save_availability'),
-    path('<slug:event_slug>/', views.availability_calendar, name='schedule'),
+
 ]

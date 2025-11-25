@@ -6,6 +6,8 @@ function initScheduleCalendar(today) {
     return;
   }
 
+  console.log("window: ", window);
+
   const dp = new DayPilot.Calendar("schedule", {
     viewType: "Week",
     startDate: today,
@@ -34,7 +36,7 @@ function initScheduleCalendar(today) {
 }
 
 function loadSavedAvailability(dp) {
-  fetch(`/events/${window.eventSlug}/availability/load/`)
+  fetch(`/events/${window.eventId}/availability/load/`)
     .then(res => res.json())
     .then((data) => {
       data.blocks.forEach(block => {
@@ -92,7 +94,7 @@ function saveAvailability(dp) {
 
   console.log("Sending blocks:", blocks);
 
-  fetch(`/events/${window.eventSlug}/availability/save/`
+  fetch(`/events/${window.eventId}/availability/save/`
     , {
       method: "POST",
       headers: {

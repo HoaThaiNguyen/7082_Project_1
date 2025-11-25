@@ -16,7 +16,7 @@ def events(request):
     search = request.GET.get("search")
     sort = request.GET.get("sort")
     events = Event.objects.all()
-    
+    print("views.py event ids: ", events.values_list("event_id", flat=True))
     if search != None:
         events = events.filter(title__icontains=search)
 
@@ -41,33 +41,34 @@ def events(request):
 
 def availability_calendar(request, event_id):
     event = get_object_or_404(Event, event_id=event_id)
+    print("inside availability_calendar view")
     context = {
         "event": event,
         "today": timezone.now().date(),
     }
-    return render(request, "events/schedule.html", context)
+    return render(request, 'events/schedule.html', context)
 
 
 @login_required(login_url='/login/')
 def rsvp_yes(request, event_id):
-    event = get_object_or_404(Event, id=event_id)
+    event = get_object_or_404(Event, event_id=event_id)
     Participation.objects.update_or_create(
         user=request.user,
         event=event,
         defaults={'status': 'yes'}
     )
-    return redirect('events:event_detail', event_id=event.id)
+    return redirect('events:event_detail', event_id=event.event_id)
 
 
 @login_required(login_url='/login/')
 def rsvp_no(request, event_id):
-    event = get_object_or_404(Event, id=event_id)
+    event = get_object_or_404(Event, event_id=event_id)
     Participation.objects.update_or_create(
         user=request.user,
         event=event,
         defaults={'status': 'no'}
     )
-    return redirect('events:event_detail', event_id=event.id)
+    return redirect('events:event_detail', event_id=event.event_id)
 
 
 @login_required(login_url='/login/')

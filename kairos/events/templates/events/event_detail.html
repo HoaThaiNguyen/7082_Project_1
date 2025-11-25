@@ -25,18 +25,18 @@
 
     <!-- RSVP Buttons -->
     <div class="flex space-x-4 mb-10">
-        <a href="{% url 'events:rsvp_yes' event.id %}"
+        <a href="{% url 'events:rsvp_yes' event.event_id %}"
            class="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
             ✔ I'm coming
         </a>
 
-        <a href="{% url 'events:rsvp_no' event.id %}"
+        <a href="{% url 'events:rsvp_no' event.event_id %}"
            class="px-5 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
             ✖ Can't make it
         </a>
     </div>
     <div class="mb-10">
-    <button class="btn-nav"><a href="{% url 'events:schedule' event.event_id %}" class="px-5 py-2 bg-blue-600 text-black rounded-lg hover:bg-blue-700 transition">📅 Set My Availability</a></button>
+    <button class="btn-nav"><a href="{% url 'events:schedule' event.event_id %}" class="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">📅 Set My Availability</a></button>
     </div>    
 
  
