@@ -59,3 +59,13 @@ class BusyTime(models.Model):
 
     def __str__(self):
         return f"{self.user.username}: {self.get_day_of_week_display()} {self.start_time}-{self.end_time}"
+
+
+class AvailabilityBlock(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    start = models.DateTimeField()
+    end = models.DateTimeField()
+
+    def __str__(self):
+        return f"{self.user.username} — {self.event.title} ({self.start} → {self.end})"

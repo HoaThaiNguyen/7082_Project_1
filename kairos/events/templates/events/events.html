@@ -8,13 +8,13 @@
 {% block content %}
     <div id="events-wrapper" x-data="eventsComponent()" class="container mx-auto max-w-[1200px] px-8">
 
-        <form action="{% url 'events:list' %}" method="GET" class="max-h-fit flex mt-16 space-x-4 md:flex-row flex-col gap-y-4 md:gap-0">
+        <form action="{% url 'events:list' %}" method="GET" class="max-h-fit flex mt-16 space-x-4 md:flex-row flex-col gap-y-4 md:gap-0 w-full">
           {% csrf_token %}
           {{ form }}
           <input value="{{request.GET.search}}" @keydown.enter="loadEvents();" class=" rounded-lg w-full md:w-2/3" id="search" name="search" type="text" placeholder="Search Event"  />
 
           <!-- Dropdown Menu -->
-          <select value="{{request.GET.sort}}" onchange="this.form.submit()" name="sort" id="sort" class="bg-secondary text-white z-10 p-3 rounded-md transition-colors duration-300 hover:border-secondary border-2 border-light cursor-pointer">
+          <select value="{{request.GET.sort}}" onchange="this.form.submit()" name="sort" id="sort" class="bg-secondary text-white z-10 p-3 rounded-md transition-colors duration-300 hover:border-secondary border-2 border-light cursor-pointer md:w-1/3 w-full">
               <option value="alphabetical-increasing" {% if request.GET.sort == "alphabetical-increasing"%}selected{% endif %}>Alphabetical Increasing</option>
               <option value="alphabetical-decreasing" {% if request.GET.sort == "alphabetical-decreasing"%}selected{% endif %}>Alphabetical Decreasing</option>
 
@@ -23,10 +23,10 @@
           </select>
         </form>
         
-        <div class="space-y-8 pr-4 py-12">
+        <div class="space-y-8 py-12">
           {% if events %}
             {% for event in events %}
-            <div class="flex items-start gap-4 p-4 bg-white rounded-xl shadow-sm w-full max-w-xl">
+            <div class="flex items-start gap-4 p-4 bg-white rounded-xl shadow-sm w-full max-w-full">
     
               <!-- Event icon / image placeholder -->
               <div class="w-16 h-16 bg-gray-200 rounded-xl flex items-center justify-center">
