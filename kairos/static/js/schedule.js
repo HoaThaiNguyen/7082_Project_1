@@ -28,12 +28,12 @@ function initScheduleCalendar(today) {
   window.dpCalendar = dp;
 
   dp.init();
-  console.log("dp after init:", dp);
+  console.log("dp after init:", dp.events);
   loadSavedAvailability(dp);
 }
 
 function loadSavedAvailability(dp) {
-  fetch(window.location.pathname + "availability/load/")
+  fetch(`/events/${window.eventSlug}/availability/load/`)
     .then(res => res.json())
     .then((data) => {
       data.blocks.forEach(block => {
@@ -54,19 +54,16 @@ function loadSavedAvailability(dp) {
 
 // Handle slot toggling like When2Meet
 function toggleSlot(dp, args) {
-  const events = dp.events.list;
-  console.log(dp);
-  const overlapping = events.filter(
-    (e) => e.start <= args.end && e.end >= args.start
-  );
+  const overlapping = dp.events.forRange(args.start, args.end);
 
-  if (overlapping.length) {
+  if (overlapping.length > 0) {
     overlapping.forEach(e => dp.events.remove(e));
   } else {
+    console.log("Adding available slot:", args.start.toString(), "to", args.end.toString());
     dp.events.add(
       new DayPilot.Event({
-        start: args.start,
-        end: args.end,
+        start: args.start.toString(),
+        end: args.end.toString(),
         text: "",
         backColor: "#86efac",
         borderColor: "#86efac",
@@ -77,29 +74,35 @@ function toggleSlot(dp, args) {
   dp.clearSelection();
 }
 
+
 function saveAvailability(dp) {
   if (!dp) {
     console.error("No calendar instance passed to saveAvailability");
     return;
   }
   console.log(dp);
-  const blocks = dp.events.map((e) => ({
-    start: e.start.toString(),
-    end: e.end.toString(),
-    date: e.start.toString().split("T")[0],
+  const all = dp.events.forRange(dp.visibleStart(), dp.visibleEnd());
+  const blocks = all.map(e => ({
+    start: new DayPilot.Date(e.data.start).toString(),
+    end: new DayPilot.Date(e.data.end).toString(),
+    date: new DayPilot.Date(e.data.start).toString().split("T")[0],
     is_busy: true,
   }));
 
-  fetch(window.location.pathname + "availability/save/", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-CSRFToken": getCookie("csrftoken"),
-    },
-    body: JSON.stringify({ blocks }),
-  })
+  console.log("Sending blocks:", blocks);
+
+  fetch(`/events/${window.eventSlug}/availability/save/`
+    , {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": getCookie("csrftoken"),
+      },
+      body: JSON.stringify({ blocks }),
+    })
     .then((res) => res.json())
     .then((data) => {
+      console.log("Availability saved:", data);
       alert("Availability saved!");
     })
     .catch((err) => console.error("Error saving availability:", err));

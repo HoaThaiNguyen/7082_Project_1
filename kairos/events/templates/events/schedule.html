@@ -28,13 +28,17 @@
 </a>
 </div>
   
-
+<script>
+    window.eventSlug = "{{ event.slug }}";
+  </script>
   <script src="{% static 'js/schedule.js' %}"></script>
 
  
-  <script>
-    window.eventId = "{{ event_id }}";
-  </script>
+  {% comment %} <script>
+    window.eventId = "{{ event.slug }}";
+  </script> {% endcomment %}
+
+  
 
   <!-- Initialize calendar when the page loads -->
   <script>

@@ -5,7 +5,8 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.contrib.auth.models import User
 import json
-
+from datetime import datetime
+from django.utils.dateparse import parse_datetime
 
 # Create your views here.
 
@@ -22,10 +23,10 @@ def events(request):
 #     events = user.event_set.all().values('id', 'name', 'date')
 #     return Response({'events': list(events)})
 
-# @login_required
-def availability_calendar(request, event_id):
+def availability_calendar(request, event_slug):
+    event = get_object_or_404(Event, slug=event_slug)
     context = {
-        "event_id": event_id,
+        "event": event,
         "today": timezone.now().date(),
     }
     return render(request, "events/schedule.html", context)
@@ -97,6 +98,7 @@ def save_availability(request, event_slug):
     if request.method != "POST":
         return JsonResponse({"error": "Invalid method"}, status=400)
 
+    print("Request body:", request.body)
     event = get_object_or_404(Event, slug=event_slug)
     data = json.loads(request.body)
 
@@ -108,11 +110,13 @@ def save_availability(request, event_slug):
 
     # Save new blocks
     for block in data.get("blocks", []):
+        start = parse_datetime(block["start"])
+        end = parse_datetime(block["end"])
         AvailabilityBlock.objects.create(
             user=request.user,
             event=event,
-            start=block["start"],
-            end=block["end"]
+            start=start,
+            end=end
         )
 
     return JsonResponse({"success": True})
