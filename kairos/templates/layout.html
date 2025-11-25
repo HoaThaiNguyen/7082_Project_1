@@ -123,13 +123,23 @@
             generateSlug() {
                 const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
                 event_id = "";
+                {# TODO: Discuss requirements of event_id #}
                 for (let i = 0; i < 16; i++) {
                     event_id += chars.charAt(Math.floor(Math.random() * chars.length));
                 }
                 console.log("event_id: ", event_id);
                 return event_id;
             },
+            async submitEvent(){
+                const form = document.querySelector("#create_event_form");
 
+                if (!form) {
+                    console.error("Could not find create_event_form");
+                    return;
+                }
+
+                form.submit();
+            },
             open() {
                 const event_id = this.generateSlug()
                 window.dispatchEvent(new CustomEvent('open-modal', {
@@ -139,9 +149,7 @@
                     }
                 }));
             },
-
         });
-
         const notificationsComponent = () => ({
             has_unread: false,
             hamburger_active: false,
