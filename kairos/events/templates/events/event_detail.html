@@ -1,6 +1,7 @@
 {% extends 'layout.html' %}
 
 {% block title %}{{ event.title }}{% endblock %}
+<p>{{ event.body }}</p>
 
 {% block content %}
 <div class="max-w-3xl mx-auto mt-10 bg-white shadow p-8 rounded-xl">
@@ -12,6 +13,15 @@
     <p class="text-sm text-gray-500 mb-8">
         Date: {{ event.date }}
     </p>
+
+    <p class="text-sm text-gray-500 mb-8">
+        Start: {{ event.start_date }} at {{ event.start_time }}
+    </p>
+    <p class="text-sm text-gray-500 mb-8">
+       End: {{ event.end_date }} at {{ event.end_time }}
+    </p>
+
+    <h4>Share the link to your friends: http://kairos.com/{{ event.slug }}</h4>
 
     <!-- RSVP Buttons -->
     <div class="flex space-x-4 mb-10">

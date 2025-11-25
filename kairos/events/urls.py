@@ -6,8 +6,10 @@ app_name = 'events'
 urlpatterns = [
     path('', views.events, name='list'),
 
+    path('create/', views.create_event, name='create'),
+
     # integer ID routes FIRST
-    path('<int:event_id>/', views.event_detail, name='event_detail'),
+    path('<slug:event_id>/', views.event_detail, name='event_detail'),
     path('<int:event_id>/yes/', views.rsvp_yes, name='rsvp_yes'),
     path('<int:event_id>/no/', views.rsvp_no, name='rsvp_no'),
 

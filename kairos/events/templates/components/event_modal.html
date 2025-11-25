@@ -3,10 +3,9 @@
 {% block modal_content %}
 
 <form
-  method="POST"
-  action="/events/create/"
   class="space-y-4"
   id = "create_event_form"
+  @submit.prevent
 >
 
 {% csrf_token %}
@@ -22,47 +21,48 @@
 </div>
 
 <div>
-<label class="block text-sm font-semibold mb-1">Description</label>
-<textarea
-  name="description"
-  rows="3"
-  class="w-full border rounded-lg px-3 py-2"
-></textarea>
+    <label class="block text-sm font-semibold mb-1">Description</label>
+    <textarea
+      name="description"
+      rows="3"
+      class="w-full border rounded-lg px-3 py-2"
+    ></textarea>
 </div>
 
 <div class="grid grid-cols-2 gap-4">
-<div>
-  <label class="block text-sm font-semibold mb-1">Start</label>
-  <input
-    type="datetime-local"
-    name="start_time"
-    required
-    class="w-full border rounded-lg px-3 py-2"
-  >
-</div>
+    <div>
+      <label class="block text-sm font-semibold mb-1">Start</label>
+      <input
+        type="datetime-local"
+        name="start_time"
+        required
+        class="w-full border rounded-lg px-3 py-2"
+      >
+    </div>
 
-<div>
-  <label class="block text-sm font-semibold mb-1">End</label>
-  <input
-    type="datetime-local"
-    name="end_time"
-    required
-    class="w-full border rounded-lg px-3 py-2"
-  >
-</div>
+    <div>
+      <label class="block text-sm font-semibold mb-1">End</label>
+      <input
+        type="datetime-local"
+        name="end_time"
+        required
+        class="w-full border rounded-lg px-3 py-2"
+      >
+    </div>
 </div>
 
   <div class="flex justify-end space-x-3 pt-6">
     <button
       type="button"
-      @click="submitEvent()"
+      @click="open = false"
       class="btn btn-light"
     >
       Cancel
     </button>
 
     <button
-      type="submit"
+      type="button"
+      @click="submitEvent()"
       class="btn btn-primary"
     >
       Create

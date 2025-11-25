@@ -72,7 +72,7 @@ def rsvp_no(request, event_id):
 
 @login_required(login_url='/login/')
 def event_detail(request, event_id):
-    event = get_object_or_404(Event, id=event_id)
+    event = get_object_or_404(Event, slug=event_id)
 
     yes = Participation.objects.filter(event=event, status='yes')
     no = Participation.objects.filter(event=event, status='no')
@@ -88,6 +88,32 @@ def event_detail(request, event_id):
     }
     return render(request, 'events/event_detail.html', context)
 
+@login_required
+def create_event(request):
+    if request.method == "POST":
+        slug = request.POST.get("event_id")
+        title = request.POST.get("title")
+        description = request.POST.get("description")
+
+        start_raw = request.POST.get("start_time")
+        end_raw = request.POST.get("end_time")
+
+        # Convert from "2025-01-12T18:30"
+        start_dt = datetime.fromisoformat(start_raw)
+        end_dt = datetime.fromisoformat(end_raw)
+
+        event = Event.objects.create(
+            title=title,
+            body=description,
+            slug=slug,
+
+            start_date=start_dt.date(),
+            start_time=start_dt.time(),
+            end_date=end_dt.date(),
+            end_time=end_dt.time(),
+        )
+
+        return redirect("events:event_detail", event_id=event.slug)
 
 @login_required
 def load_availability(request, event_slug):
@@ -136,3 +162,4 @@ def save_availability(request, event_slug):
         )
 
     return JsonResponse({"success": True})
+
