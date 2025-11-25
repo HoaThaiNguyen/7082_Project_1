@@ -1,9 +1,12 @@
+from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Event, BusyTime, Participation
+from .models import Event, BusyTime, Participation, AvailabilityBlock
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.contrib.auth.models import User
-
+import json
+from datetime import datetime
+from django.utils.dateparse import parse_datetime
 
 # Create your views here.
 
@@ -36,10 +39,10 @@ def events(request):
 #     events = user.event_set.all().values('id', 'name', 'date')
 #     return Response({'events': list(events)})
 
-# @login_required
-def availability_calendar(request, event_id):
+def availability_calendar(request, event_slug):
+    event = get_object_or_404(Event, slug=event_slug)
     context = {
-        "event_id": event_id,
+        "event": event,
         "today": timezone.now().date(),
     }
     return render(request, "events/schedule.html", context)
@@ -84,3 +87,52 @@ def event_detail(request, event_id):
         'not_responded': not_responded
     }
     return render(request, 'events/event_detail.html', context)
+
+
+@login_required
+def load_availability(request, event_slug):
+    event = get_object_or_404(Event, slug=event_slug)
+
+    blocks = AvailabilityBlock.objects.filter(
+        user=request.user,
+        event=event
+    )
+
+    response = [
+        {
+            "start": block.start.isoformat(),
+            "end": block.end.isoformat(),
+        }
+        for block in blocks
+    ]
+
+    return JsonResponse({"blocks": response})
+
+
+@login_required
+def save_availability(request, event_slug):
+    if request.method != "POST":
+        return JsonResponse({"error": "Invalid method"}, status=400)
+
+    print("Request body:", request.body)
+    event = get_object_or_404(Event, slug=event_slug)
+    data = json.loads(request.body)
+
+    # Delete previous blocks for this user/event
+    AvailabilityBlock.objects.filter(
+        user=request.user,
+        event=event
+    ).delete()
+
+    # Save new blocks
+    for block in data.get("blocks", []):
+        start = parse_datetime(block["start"])
+        end = parse_datetime(block["end"])
+        AvailabilityBlock.objects.create(
+            user=request.user,
+            event=event,
+            start=start,
+            end=end
+        )
+
+    return JsonResponse({"success": True})
