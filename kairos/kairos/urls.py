@@ -43,9 +43,9 @@ urlpatterns = [
     path('notifications/', include('notifications.urls')),
     path('groups/', include('groups.urls')),
 
-    path('users/', include('users.urls')),
+    path('profile/', include('users.urls')),
 
-    path('busy/', include('schedules.urls')),
+    # path('busy/', include('schedules.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
