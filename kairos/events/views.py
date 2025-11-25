@@ -7,6 +7,8 @@ from django.contrib.auth.models import User
 import json
 from datetime import datetime
 from django.utils.dateparse import parse_datetime
+from django.http import HttpResponseForbidden
+
 
 # Create your views here.
 
@@ -120,3 +122,27 @@ def save_availability(request, event_slug):
         )
 
     return JsonResponse({"success": True})
+
+
+@login_required
+def availability_report(request, event_slug):
+    event = get_object_or_404(Event, slug=event_slug)
+
+    # Allow ONLY event owner
+    if request.user != event.owner:
+        return HttpResponseForbidden("You are not allowed to view this page.")
+
+    # Load ALL availability for this event
+    blocks = (
+        AvailabilityBlock.objects
+        .filter(event=event)
+        .select_related("user")
+        .order_by("user__username", "start")
+    )
+
+    context = {
+        "event": event,
+        "blocks": blocks,
+    }
+
+    return render(request, "events/availability_report.html", context)

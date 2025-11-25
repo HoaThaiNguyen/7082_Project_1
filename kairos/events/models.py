@@ -13,6 +13,8 @@ class Event(models.Model):
     slug = models.SlugField()
     # Date timestamp added every event creation
     date = models.DateTimeField(auto_now_add=True)
+    owner = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="owned_events")
 
     def __str__(self):
         return self.title

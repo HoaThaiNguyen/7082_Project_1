@@ -28,7 +28,13 @@
     <div class="mb-10">
     <button class="btn-nav"><a href="{% url 'events:schedule' event.slug %}" class="px-5 py-2 bg-blue-600 text-black rounded-lg hover:bg-blue-700 transition">📅 Set My Availability</a></button>
     </div>    
-
+    {% if request.user == event.owner %}
+    <a href="{% url 'events:availability_report' event.slug %}"
+       class="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+       View Availability Report
+    </a>
+    {% endif %}
+    
  
     <hr class="my-10">
 

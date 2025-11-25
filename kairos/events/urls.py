@@ -17,4 +17,8 @@ urlpatterns = [
     path('<slug:event_slug>/availability/save/',
          views.save_availability, name='save_availability'),
     path('<slug:event_slug>/', views.availability_calendar, name='schedule'),
+    path("<slug:event_slug>/availability/report/",
+         views.availability_report,
+         name="availability_report"),
+
 ]
