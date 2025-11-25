@@ -16,7 +16,7 @@ def events(request):
     search = request.GET.get("search")
     sort = request.GET.get("sort")
     events = Event.objects.all()
-    
+    print("views.py event ids: ", events.values_list("event_id", flat=True))
     if search != None:
         events = events.filter(title__icontains=search)
 
@@ -39,40 +39,41 @@ def events(request):
 #     events = user.event_set.all().values('id', 'name', 'date')
 #     return Response({'events': list(events)})
 
-def availability_calendar(request, event_slug):
-    event = get_object_or_404(Event, slug=event_slug)
+def availability_calendar(request, event_id):
+    event = get_object_or_404(Event, event_id=event_id)
+    print("inside availability_calendar view")
     context = {
         "event": event,
         "today": timezone.now().date(),
     }
-    return render(request, "events/schedule.html", context)
+    return render(request, 'events/schedule.html', context)
 
 
 @login_required(login_url='/login/')
 def rsvp_yes(request, event_id):
-    event = get_object_or_404(Event, id=event_id)
+    event = get_object_or_404(Event, event_id=event_id)
     Participation.objects.update_or_create(
         user=request.user,
         event=event,
         defaults={'status': 'yes'}
     )
-    return redirect('events:event_detail', event_id=event.id)
+    return redirect('events:event_detail', event_id=event.event_id)
 
 
 @login_required(login_url='/login/')
 def rsvp_no(request, event_id):
-    event = get_object_or_404(Event, id=event_id)
+    event = get_object_or_404(Event, event_id=event_id)
     Participation.objects.update_or_create(
         user=request.user,
         event=event,
         defaults={'status': 'no'}
     )
-    return redirect('events:event_detail', event_id=event.id)
+    return redirect('events:event_detail', event_id=event.event_id)
 
 
 @login_required(login_url='/login/')
 def event_detail(request, event_id):
-    event = get_object_or_404(Event, id=event_id)
+    event = get_object_or_404(Event, event_id=event_id)
 
     yes = Participation.objects.filter(event=event, status='yes')
     no = Participation.objects.filter(event=event, status='no')
@@ -88,10 +89,36 @@ def event_detail(request, event_id):
     }
     return render(request, 'events/event_detail.html', context)
 
+@login_required
+def create_event(request):
+    if request.method == "POST":
+        event_id = request.POST.get("event_id")
+        title = request.POST.get("title")
+        description = request.POST.get("description")
+
+        start_raw = request.POST.get("start_time")
+        end_raw = request.POST.get("end_time")
+
+        # Convert from "2025-01-12T18:30"
+        start_dt = datetime.fromisoformat(start_raw)
+        end_dt = datetime.fromisoformat(end_raw)
+
+        event = Event.objects.create(
+            title=title,
+            body=description,
+            event_id=event_id,
+
+            start_date=start_dt.date(),
+            start_time=start_dt.time(),
+            end_date=end_dt.date(),
+            end_time=end_dt.time(),
+        )
+
+        return redirect("events:event_detail", event_id=event.event_id)
 
 @login_required
-def load_availability(request, event_slug):
-    event = get_object_or_404(Event, slug=event_slug)
+def load_availability(request, event_id):
+    event = get_object_or_404(Event, event_id=event_id)
 
     blocks = AvailabilityBlock.objects.filter(
         user=request.user,
@@ -110,12 +137,12 @@ def load_availability(request, event_slug):
 
 
 @login_required
-def save_availability(request, event_slug):
+def save_availability(request, event_id):
     if request.method != "POST":
         return JsonResponse({"error": "Invalid method"}, status=400)
 
     print("Request body:", request.body)
-    event = get_object_or_404(Event, slug=event_slug)
+    event = get_object_or_404(Event, event_id=event_id)
     data = json.loads(request.body)
 
     # Delete previous blocks for this user/event
@@ -136,3 +163,4 @@ def save_availability(request, event_slug):
         )
 
     return JsonResponse({"success": True})
+

@@ -12,8 +12,6 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-
-
 # Ignore log files
 *.log
 
@@ -21,7 +19,6 @@ __pycache__/
 venv/
 env/
 .DS_Store
-
 
 # Django cache files
 /pycache/
@@ -42,3 +39,8 @@ env/
 # Common Django runtime files
 db.sqlite3
 kairos/static/dist/style.css
+
+# Python cache
+__pycache__/
+*.py[cod]
+

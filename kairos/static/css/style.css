@@ -59,7 +59,19 @@
         @apply rounded-md px-4 py-2 text-sm md:text-lg text-dark bg-white border-dark border-2 hover:bg-gray-200
     }
 
-    input {
-        @apply rounded-md text-lg px-2 py-1 w-full border-2 border-dark focus:outline-none focus:ring-1 focus:ring-dark bg-white
+    input,
+    textarea {
+        @apply rounded-md text-lg px-2 py-1 w-full border-2 border-dark bg-white
+           focus:outline-none focus:ring-1 focus:ring-dark resize-none;
+    }
+
+    [x-cloak] { display: none !important; }
+
+    body.modal-open > *:not(.modal-root) {
+        pointer-events: none;
+    }
+
+    body.modal-open {
+        overflow: hidden;
     }
 }

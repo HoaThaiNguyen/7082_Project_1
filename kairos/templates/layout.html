@@ -34,7 +34,14 @@
     <nav class="flex-col bg-linear-to-r from-primary-200 to-secondary y p-4 flex sm:flex-row justify-between items-center relative space-y-2 md:space-y-0">
         <div class="h-full flex items-center space-x-2">
             <a href="/events" class="md:text-4xl text-2xl"><i class="fa-solid fa-house transition-colors duration-300 text-light hover:text-primary-100"></i></a>
-            <button class="btn-nav">Create Event</button>
+{#            <button class="btn-nav">Create Event</button>#}
+            <div x-data="createEventComponent()">
+                <button @click="open()" class="btn-nav">
+                    Create Event
+                </button>
+
+                {% include "components/event_modal.html" with id="create-event-modal" title="Create Event" %}
+            </div>
             <button class="btn-nav">Attend Event</button>
             <button class="btn-nav"><a href="/groups/" >Groups</a></button>
 
@@ -112,6 +119,52 @@
     </main>
 
     <script>
+        const createEventComponent = () => ({
+            generateSlug() {
+                const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+                event_id = "";
+                {# TODO: Discuss requirements of event_id #}
+                for (let i = 0; i < 16; i++) {
+                    event_id += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                console.log("event_id: ", event_id);
+                return event_id;
+            },
+            async submitEvent(){
+                const form = document.getElementById("create_event_form");
+                const formData = new FormData(form);
+                if (!form) {
+                    console.error("Could not find create_event_form");
+                    return;
+                }
+
+                formData.append("event_id", event_id);
+                console.log("FormData: ", formData);
+
+                const response = await fetch("/events/create/", {
+                  method: "POST",
+                  headers: {
+                    "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+                  },
+                  body: formData
+                });
+
+                if (response.redirected) {
+                  window.location.href = response.url;
+                } else {
+                  console.error("Event creation failed");
+                }
+            },
+            open() {
+                const event_id = this.generateSlug()
+                window.dispatchEvent(new CustomEvent('open-modal', {
+                    detail: {
+                        id: 'create-event-modal',
+                        title: 'Create New Event'
+                    }
+                }));
+            },
+        });
         const notificationsComponent = () => ({
             has_unread: false,
             hamburger_active: false,
@@ -121,7 +174,7 @@
                 const res = await fetch('/notifications/', {method: 'GET', headers: {'X-CSRFToken': csrfToken} });
                 if (res.ok) {
                     const data = await res.json();
-                    console.log("notifications recieved", data);
+                    console.log("notifications received", data);
                     this.notifications = data;
                 } else {
                     console.error('failed to load notifications');
@@ -139,7 +192,7 @@
                 }
             },
             async clearNotifications(notifications) {
-                const res = await fetch("/notifications/clear", 
+                const res = await fetch("/notifications/clear",
                 {method: "DELETE", headers: {
                     'X-CSRFToken': csrfToken
                 } });
@@ -154,7 +207,7 @@
                 try {
                     // mark notification as read if it isn't currently once clicking on it
                     if (!notification.is_read) {
-                        const res = await fetch(`/notifications/mark-read/${notification.id}/`, 
+                        const res = await fetch(`/notifications/mark-read/${notification.id}/`,
                         {method: 'POST', headers: {'X-CSRFToken': csrfToken} });
 
                         if (res.ok) {
@@ -166,13 +219,13 @@
                     // redirect to notification url
                     window.location.href = notification.url;
                 } catch (err) {
-                    console.error(err); 
+                    console.error(err);
                     window.location.href = notification.url;
                 }
             }
         });
     </script>
-    </script>
+
     <script>
         function logoutUser() {
           console.log("Logging out...");
@@ -180,12 +233,12 @@
           localStorage.removeItem('refresh');
           window.location.href = '/login/';
         }
-      
+
         document.addEventListener('DOMContentLoaded', () => {
           const token = localStorage.getItem('access');
           const loginLink = document.getElementById('loginLink');
           const logoutBtn = document.getElementById('logoutBtn');
-      
+
           if (token) {
             loginLink.classList.add('hidden');
             logoutBtn.classList.remove('hidden');

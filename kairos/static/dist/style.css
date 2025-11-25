@@ -51,8 +51,6 @@
     --text-5xl--line-height: 1;
     --text-6xl: 3.75rem;
     --text-6xl--line-height: 1;
-    --text-7xl: 4.5rem;
-    --text-7xl--line-height: 1;
     --font-weight-medium: 500;
     --font-weight-semibold: 600;
     --font-weight-bold: 700;
@@ -262,6 +260,9 @@
   }
   .z-50 {
     z-index: 50;
+  }
+  .z-\[999\] {
+    z-index: 999;
   }
   .container {
     width: 100%;
@@ -485,6 +486,9 @@
   .list-none {
     list-style-type: none;
   }
+  .grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
   .flex-col {
     flex-direction: column;
   }
@@ -505,6 +509,9 @@
   }
   .justify-center {
     justify-content: center;
+  }
+  .justify-end {
+    justify-content: flex-end;
   }
   .gap-4 {
     gap: calc(var(--spacing) * 4);
@@ -561,6 +568,13 @@
       margin-inline-end: calc(calc(var(--spacing) * 2) * calc(1 - var(--tw-space-x-reverse)));
     }
   }
+  .space-x-3 {
+    :where(& > :not(:last-child)) {
+      --tw-space-x-reverse: 0;
+      margin-inline-start: calc(calc(var(--spacing) * 3) * var(--tw-space-x-reverse));
+      margin-inline-end: calc(calc(var(--spacing) * 3) * calc(1 - var(--tw-space-x-reverse)));
+    }
+  }
   .space-x-4 {
     :where(& > :not(:last-child)) {
       --tw-space-x-reverse: 0;
@@ -570,6 +584,9 @@
   }
   .gap-y-4 {
     row-gap: calc(var(--spacing) * 4);
+  }
+  .overflow-hidden {
+    overflow: hidden;
   }
   .overflow-y-auto {
     overflow-y: auto;
@@ -694,6 +711,9 @@
   .p-12 {
     padding: calc(var(--spacing) * 12);
   }
+  .px-3 {
+    padding-inline: calc(var(--spacing) * 3);
+  }
   .px-4 {
     padding-inline: calc(var(--spacing) * 4);
   }
@@ -714,6 +734,9 @@
   }
   .py-12 {
     padding-block: calc(var(--spacing) * 12);
+  }
+  .pt-6 {
+    padding-top: calc(var(--spacing) * 6);
   }
   .pt-8 {
     padding-top: calc(var(--spacing) * 8);
@@ -741,10 +764,6 @@
   .text-4xl {
     font-size: var(--text-4xl);
     line-height: var(--tw-leading, var(--text-4xl--line-height));
-  }
-  .text-7xl {
-    font-size: var(--text-7xl);
-    line-height: var(--tw-leading, var(--text-7xl--line-height));
   }
   .text-lg {
     font-size: var(--text-lg);
@@ -1174,8 +1193,9 @@
       line-height: var(--tw-leading, var(--text-lg--line-height));
     }
   }
-  input {
+  input, textarea {
     width: 100%;
+    resize: none;
     border-radius: var(--radius-md);
     border-style: var(--tw-border-style);
     border-width: 2px;
@@ -1196,6 +1216,15 @@
       --tw-outline-style: none;
       outline-style: none;
     }
+  }
+  [x-cloak] {
+    display: none !important;
+  }
+  body.modal-open > *:not(.modal-root) {
+    pointer-events: none;
+  }
+  body.modal-open {
+    overflow: hidden;
   }
 }
 @property --tw-translate-x {

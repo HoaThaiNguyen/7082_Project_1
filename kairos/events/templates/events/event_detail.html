@@ -1,6 +1,7 @@
 {% extends 'layout.html' %}
 
 {% block title %}{{ event.title }}{% endblock %}
+<p>{{ event.body }}</p>
 
 {% block content %}
 <div class="max-w-3xl mx-auto mt-10 bg-white shadow p-8 rounded-xl">
@@ -13,20 +14,29 @@
         Date: {{ event.date }}
     </p>
 
+    <p class="text-sm text-gray-500 mb-8">
+        Start: {{ event.start_date }} at {{ event.start_time }}
+    </p>
+    <p class="text-sm text-gray-500 mb-8">
+       End: {{ event.end_date }} at {{ event.end_time }}
+    </p>
+
+    <h4>Share the link to your friends: http://kairos.com/{{ event.event_id }}</h4>
+
     <!-- RSVP Buttons -->
     <div class="flex space-x-4 mb-10">
-        <a href="{% url 'events:rsvp_yes' event.id %}"
+        <a href="{% url 'events:rsvp_yes' event.event_id %}"
            class="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
             ✔ I'm coming
         </a>
 
-        <a href="{% url 'events:rsvp_no' event.id %}"
+        <a href="{% url 'events:rsvp_no' event.event_id %}"
            class="px-5 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
             ✖ Can't make it
         </a>
     </div>
     <div class="mb-10">
-    <button class="btn-nav"><a href="{% url 'events:schedule' event.slug %}" class="px-5 py-2 bg-blue-600 text-black rounded-lg hover:bg-blue-700 transition">📅 Set My Availability</a></button>
+    <button class="btn-nav"><a href="{% url 'events:schedule' event.event_id %}" class="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">📅 Set My Availability</a></button>
     </div>    
 
  
