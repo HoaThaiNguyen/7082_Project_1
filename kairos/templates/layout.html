@@ -131,7 +131,7 @@
             generateSlug() {
                 const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
                 event_id = "";
-                {# TODO: Discuss requirements of event_id #}
+                // {# TODO: Discuss requirements of event_id #}
                 for (let i = 0; i < 16; i++) {
                     event_id += chars.charAt(Math.floor(Math.random() * chars.length));
                 }
