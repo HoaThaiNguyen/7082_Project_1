@@ -14,7 +14,7 @@ def get_notifications(request):
     notifications = models.Notification.objects.values(
         'id', 'title', 'description', 'is_read', 'type',
         'from_user__username', 'to_user__username', 'date', 'url'
-    ).filter(to_user = request.user)
+    ).filter(to_user = request.user).order_by('-date')
 
     return JsonResponse(list(notifications), safe=False)
 

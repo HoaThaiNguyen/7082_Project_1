@@ -4,8 +4,20 @@
 <p>{{ event.body }}</p>
 
 {% block content %}
-<div class="max-w-3xl mx-auto mt-10 bg-white shadow p-8 rounded-xl">
+<div x-data='EventComponent(
+    { 
+        event_id: "{{event.event_id}}", 
+    }
+)' class="relative max-w-3xl mx-auto mt-10 bg-white shadow p-8 rounded-xl">
 
+    <!-- Allow the creator to delete the event only -->
+    {% if user == event.creator %}
+
+        {% include '../components/modal.html' with id="deleteEventModal" title="Delete event?" content="Warning, all the event data will be lost and you will not be able to get it back!" %}
+
+        <button @click="$dispatch('open-modal', 
+        { id: 'deleteEventModal', action:() => deleteEvent() })" class="cursor-pointer absolute top-0 right-0"><i class="text-4xl text-red-500 fa-solid fa-trash-can"></i></button>
+    {% endif %}
    
     <h1 class="text-3xl font-bold mb-2 text-dark">{{ event.title }}</h1>
     <p class="text-gray-700 mb-4">{{ event.body }}</p>
@@ -103,4 +115,19 @@
     </a>
 
 </div>
+<script>
+    const EventComponent = (data) => ({
+        event_id: data.event_id,
+        async deleteEvent() {
+            console.log(csrfToken)
+            console.log("Attempting to delete event")
+            const res = await fetch(`/events/${this.event_id}/delete/`, {method: 'POST', headers: {'X-CSRFToken': csrfToken} });
+            if (!res.ok) {
+                alert("Could not delete event: " + res.status)
+            } else {
+                window.location.href = "/events"
+            }
+        },
+    });
+</script>
 {% endblock %}

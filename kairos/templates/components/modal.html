@@ -30,7 +30,7 @@
 
         @keydown.escape.window="open = false"
 
-        {# toggle visibility of <select> filter in events.html when opening modal #}
+        
         @open-modal.window="
           if ($event.detail.id === '{{id}}') {
 
@@ -44,7 +44,7 @@
           }
         "
         id="{{ id|default:'modal' }}"
-        class="modal-root flex fixed inset-0 items-center justify-center z-[999]"
+        class="modal-root flex fixed inset-0 items-center justify-center z-100"
     >
         <!-- overlay -->
         <div class="w-full h-full inset-0 backdrop-brightness-50 z-40 absolute"></div>
@@ -60,10 +60,10 @@
                 <p class="text-white">{{content|default:"content"}}</p>
             {% endblock %}
 
-{#            <div class="flex flex-row gap-8 pt-8">#}
-{#                <button @click="open = false" class="btn btn-light">Cancel</button>#}
-{#                <button @click="confirmAction()" class="btn btn-notify">Confirm</button>#}
-{#            </div>#}
+            <div class="flex flex-row gap-8 pt-8">
+                <button @click="open = false" class="btn btn-light">Cancel</button>
+                <button @click="confirmAction()" class="btn btn-notify">Confirm</button>
+            </div>
 
         </div>
     </div>

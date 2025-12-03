@@ -1,12 +1,15 @@
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Event, BusyTime, Participation, AvailabilityBlock
+from notifications.models import Notification
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.contrib.auth.models import User
 import json
 from datetime import datetime
 from django.utils.dateparse import parse_datetime
+from django.http import HttpResponseForbidden, HttpResponseNotAllowed
+import uuid
 
 # Create your views here.
 
@@ -15,7 +18,9 @@ from django.utils.dateparse import parse_datetime
 def events(request):
     search = request.GET.get("search")
     sort = request.GET.get("sort")
+
     events = Event.objects.all()
+
     print("views.py event ids: ", events.values_list("event_id", flat=True))
     if search != None:
         events = events.filter(title__icontains=search)
@@ -30,7 +35,6 @@ def events(request):
         elif sort == "alphabetical-decreasing":
             events = sorted(events, key=lambda x: x.title, reverse=True)
 
-    #print("DEBUG - Events fetched:", events)
     return render(request, 'events/events.html', {'events': events})
 
 
@@ -57,6 +61,17 @@ def rsvp_yes(request, event_id):
         event=event,
         defaults={'status': 'yes'}
     )
+
+    # Notify the event creator that someone has updated their status
+    if request.user != event.creator:
+        Notification.objects.create(
+            from_user=request.user,
+            to_user=event.creator,
+            title="Update for " + event.title,
+            description=request.user.username + " responded 'yes' for " + event.title,
+            url=event_id
+        )
+    
     return redirect('events:event_detail', event_id=event.event_id)
 
 
@@ -68,6 +83,17 @@ def rsvp_no(request, event_id):
         event=event,
         defaults={'status': 'no'}
     )
+
+    # Notify the event creator that someone has updated their status
+    if request.user != event.creator:
+        Notification.objects.create(
+            from_user=request.user,
+            to_user=event.creator,
+            title="Update for " + event.title,
+            description=request.user.username + " responded 'no' for " + event.title,
+            url=event_id
+        )
+
     return redirect('events:event_detail', event_id=event.event_id)
 
 
@@ -112,9 +138,41 @@ def create_event(request):
             start_time=start_dt.time(),
             end_date=end_dt.date(),
             end_time=end_dt.time(),
+            creator=request.user,
         )
 
         return redirect("events:event_detail", event_id=event.event_id)
+    
+
+@login_required
+def delete_event(request, event_id):
+    if request.method == "POST":
+        event_to_delete = get_object_or_404(Event, event_id=event_id)
+
+        # ensure only the creator of the event is deleting it
+        if event_to_delete.creator == request.user:
+            # inform all the participants (besides the creator) with a notification
+            responded_user_ids = Participation.objects.filter(
+            event=event_to_delete).values_list('user_id', flat=True)
+            responded_users = User.objects.filter(id__in=responded_user_ids)
+            for user in responded_users:
+                if user != event_to_delete.creator:
+                    Notification.objects.create(
+                        from_user=event_to_delete.creator,
+                        to_user=user,
+                        title="Event Deleted",
+                        description="The event " + event_to_delete.title + " that you were participating in was deleted",
+                        url="/events"
+                    )
+
+            # delete the event
+            event_to_delete.delete()
+
+            return redirect("events:list")
+        return HttpResponseForbidden("You are not allowed to delete this event")
+
+    return HttpResponseNotAllowed(["POST"])
+
 
 @login_required
 def load_availability(request, event_id):

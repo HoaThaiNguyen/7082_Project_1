@@ -7,6 +7,7 @@ urlpatterns = [
     path('', views.events, name='list'),
 
     path('create/', views.create_event, name='create'),
+    path('<slug:event_id>/delete/', views.delete_event, name="delete"),
 
     # integer ID routes FIRST
     path('<slug:event_id>/', views.event_detail, name='event_detail'),

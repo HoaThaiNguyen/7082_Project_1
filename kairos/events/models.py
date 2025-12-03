@@ -23,11 +23,15 @@ class Event(models.Model):
     end_date = models.DateField()
     end_time = models.TimeField()
 
+    # person who created the event
+    creator = models.ForeignKey(
+        User,
+        related_name='event_creator',
+        on_delete=models.CASCADE
+    )
+
     def __str__(self):
         return self.title
-
-
-# Create your models here.
 
 
 class Participation(models.Model):

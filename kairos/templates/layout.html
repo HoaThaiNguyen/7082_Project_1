@@ -36,11 +36,13 @@
             <a href="/events" class="md:text-4xl text-2xl"><i class="fa-solid fa-house transition-colors duration-300 text-light hover:text-primary-100"></i></a>
 {#            <button class="btn-nav">Create Event</button>#}
             <div x-data="createEventComponent()">
-                <button @click="open()" class="btn-nav">
-                    Create Event
-                </button>
 
-                {% include "components/event_modal.html" with id="create-event-modal" title="Create Event" %}
+                <button @click="$dispatch('open-modal', 
+                { id: 'create-event-modal', action:submitEvent })" class="btn btn-nav">Create Event</button>
+
+                {% include "components/event_modal.html" with id="create-event-modal" title="Create New Event" %}
+
+
             </div>
 {#            <button class="btn-nav">Attend Event</button>#}
             <button class="btn-nav"><a href="/groups/" >Groups</a></button>
@@ -123,7 +125,7 @@
             generateSlug() {
                 const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
                 event_id = "";
-                {# TODO: Discuss requirements of event_id #}
+                // TODO: Discuss requirements of event_id
                 for (let i = 0; i < 16; i++) {
                     event_id += chars.charAt(Math.floor(Math.random() * chars.length));
                 }
@@ -131,6 +133,7 @@
                 return event_id;
             },
             async submitEvent(){
+                const event_id = this.generateSlug()
                 const form = document.getElementById("create_event_form");
                 const formData = new FormData(form);
                 if (!form) {
@@ -154,15 +157,6 @@
                 } else {
                   console.error("Event creation failed");
                 }
-            },
-            open() {
-                const event_id = this.generateSlug()
-                window.dispatchEvent(new CustomEvent('open-modal', {
-                    detail: {
-                        id: 'create-event-modal',
-                        title: 'Create New Event'
-                    }
-                }));
             },
         });
         const notificationsComponent = () => ({
