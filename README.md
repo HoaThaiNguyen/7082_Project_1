@@ -17,3 +17,18 @@ Institution: British Columbia Institute of Technology
 | Clayton Hunter | A01291769  |
 | Hoa Nguyen     | A01341680  |
 | Madhav Ramdev  | A01257021  |
+
+### Dependencies
+Run the following command to install any dependencies the project requires:
+`pip install -r requirements.txt`
+
+If other dependencies are still required, please run the commands listed below as necessary.
+
+djangorestframework
+`pip install djangorestframework djangorestframework-simplejwt django-cors-headers`
+
+Pillow
+`python -m pip install Pillow`
+
+Run:
+`python3 manage.py runserver`
