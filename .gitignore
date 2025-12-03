@@ -1,7 +1,7 @@
 node_modules/
 .DS_Store
 .idea/
-
+static/dist/style.css
 5.0
 
 # Ignore Python cache files
@@ -19,7 +19,6 @@ __pycache__/
 venv/
 env/
 .DS_Store
-
 
 # Django cache files
 /pycache/
@@ -40,3 +39,8 @@ env/
 # Common Django runtime files
 db.sqlite3
 kairos/static/dist/style.css
+
+# Python cache
+__pycache__/
+*.py[cod]
+

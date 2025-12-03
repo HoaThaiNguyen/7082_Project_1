@@ -12,16 +12,40 @@
 {% block content %}
 <section class="schedule-container">
   <h1 class="schedule-title">Select Your Availability</h1>
-  <div id="schedule"></div>
 
-  <!-- Page-specific logic -->
+  
+  <div id="schedule"></div>
+  <button 
+    onclick="saveAvailability(dpCalendar)" 
+    class="btn-nav" console.log("Saving availability...");>
+    Save Availability
+</button>
+
+<div class="mt-4 text-sm text-gray-600">
+    <a href="/events/" class="text-primary-200 underline hover:text-primary-100">
+    ← Back to Events
+</a>
+</div>
+  
+<script>
+    window.eventId = "{{ event.event_id }}";
+  </script>
   <script src="{% static 'js/schedule.js' %}"></script>
+
+ 
+  {% comment %} <script>
+    window.eventId = "{{ event.slug }}";
+  </script> {% endcomment %}
+
+  
+
+  <!-- Initialize calendar when the page loads -->
   <script>
-    // Initialize calendar after scripts load
     document.addEventListener("DOMContentLoaded", () => {
       const today = "{{ today|date:'Y-m-d' }}";
       window.initScheduleCalendar(today);
     });
   </script>
+
 </section>
 {% endblock %}
