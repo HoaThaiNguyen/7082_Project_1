@@ -3,25 +3,29 @@
   margin: 2rem auto;
   border-radius: 0.5rem;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Calendar theme overrides */
 .calendar_default_main {
   border: 1px solid #d1d5db;
 }
+
 .calendar_default_cell {
   background-color: #fff;
   border: 1px solid #f1f5f9;
   transition: background 0.15s;
 }
+
 .calendar_default_cell:hover {
   background-color: #dbeafe;
 }
+
 .calendar_default_cell_selected {
   background-color: #86efac !important;
   border-color: #86efac;
 }
+
 .calendar_default_colheader_inner,
 .calendar_default_rowheader_inner,
 .calendar_default_corner {
@@ -35,6 +39,7 @@
 .schedule-container {
   text-align: center;
 }
+
 .schedule-title {
   margin-bottom: 1.5rem;
   font-weight: 600;
