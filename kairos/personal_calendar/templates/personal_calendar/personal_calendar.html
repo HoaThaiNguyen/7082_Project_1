@@ -1,0 +1,153 @@
+{% extends "layout.html" %}
+
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js"></script>
+
+{% block content %}
+    <h2 style="text-align: center;">My Calendar</h2>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; height: 85vh;">
+    
+        <div>
+            <h2> Recurring Times </h2>
+
+            <!-- Form to add more recurring times -->
+            <form method="POST" class="mb-4">
+                {% csrf_token %}
+                <div style="display: grid; grid-template-columns: 0.5fr 0.5fr 0.5fr 1fr 0.5fr; gap: 1rem; flex-wrap: wrap; align-items: center;">
+                    <div>{{ form.day_of_week.label_tag }} {{ form.day_of_week }}</div>
+                    <div>{{ form.start_time.label_tag }} {{ form.start_time }}</div>
+                    <div>{{ form.end_time.label_tag }} {{ form.end_time }}</div>
+                    <div>{{ form.description.label_tag }} {{ form.description }}</div>
+                    <button class="btn btn-primary" type="submit">Add Busy Time</button>
+                </div>
+            </form>
+
+            <!-- Table displaying existing recurring times -->
+            <table cellpadding="8" style="border-collapse:separate; text-align:center; border-spacing: 0 10px; width: 100%;">
+                <tr>
+                    <th>Day</th>
+                    <th>Time Range</th>
+                    <th>Description</th>
+                </tr>
+                {% for recurring_busy_time in recurring_busy_times %}
+                    <tr class="recurring-row" 
+                        data-pk="{{ recurring_busy_time.pk }}"
+                        data-day="{{ recurring_busy_time.day_of_week }}"
+                        data-start="{{ recurring_busy_time.start_time|time:'H:i' }}"
+                        data-end="{{ recurring_busy_time.end_time|time:'H:i' }}"
+                        data-desc="{{ recurring_busy_time.description }}" 
+                        style="background-color: white; gap: 1rem; box-shadow: 0 6px 6px rgba(0, 0, 0, 0.1);">
+
+                            <td class="day">{{ recurring_busy_time.get_day_of_week_display }}</td>
+                            <td class="time">{{ recurring_busy_time.start_time }} - {{ recurring_busy_time.end_time }}</td>
+                            <td class="desc">{{ recurring_busy_time.description }}</td>
+                            <td>
+                                <button type="button" class="btn btn-secondary edit-btn" style="width:40%">
+                                    Edit
+                                </button>
+
+                                <form method="POST" action="{% url 'personal_calendar:delete_recurring_time' recurring_busy_time.pk %}" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-notify btn-sm" style="width:50%">Delete</button>
+                                </form>
+                            </td>
+                    </tr>
+                    {% empty %} 
+                        <tr><td colspan="3">No busy times yet.</td></tr>
+                {% endfor %}
+
+                <!-- Reusable form to edit a recurring time -->
+                <tr id="edit-row-template" style="display: none;">
+                    <td colspan="4">
+                        <form method="POST" class="inline-edit-form">
+                            {% csrf_token %}
+                            <div style="display:grid; grid-template-columns: 0.5fr 0.5fr 0.5fr 1fr 0.5fr; gap:0.5rem;">
+                                <select name="day_of_week" class="form-control form-control-sm day-input">
+                                    {% for value, label in form.day_of_week.field.choices %}
+                                        <option value="{{ value }}">{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                                <input type="time" name="start_time" class="form-control form-control-sm start-input">
+                                <input type="time" name="end_time" class="form-control form-control-sm end-input">
+                                <input type="text" name="description" class="form-control form-control-sm desc-input" placeholder="Description">
+                                <div>
+                                    <button type="submit" class="btn btn-primary btn-sm">Save</button>
+                                    <button type="button" class="btn btn-secondary btn-sm cancel-btn">Cancel</button>
+                                </div>
+                            </div>
+                        </form>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Right side Calendar -->
+        <div id="calendar-container" style="overflow-y: auto;">
+            <div id="calendar" style="min-height:1000px"></div>
+        </div>
+
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // ----- Load up FullCalendar -----
+            const calendarEl = document.getElementById('calendar');
+            const events = JSON.parse('{{ events_json|escapejs }}');  // safe JSON from Django
+
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'timeGridWeek',
+                firstDay: 1,
+                allDaySlot: false,
+                height: 'auto',
+                events: events
+            });
+
+            calendar.render();
+       
+
+            // ----- Inline Recur Time Edit -----
+            const editRowTemplate = document.getElementById('edit-row-template');
+            // const recurringTimes = JSON.parse('{{ recurring_busy_times_json|escapejs }}');
+
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const row = btn.closest('tr');
+                    const pk = row.dataset.pk;
+
+                    // Clone the template
+                    const editRow = editRowTemplate.cloneNode(true);
+                    editRow.style.display = 'table-row';
+                    editRow.id = 'active-edit-row';
+                    
+                    const editForm = editRow.querySelector('.inline-edit-form');
+                    editForm.action = `/personal_calendar/edit/${pk}/`;
+
+                    // Populate inputs
+                    editRow.querySelector('.day-input').value = row.dataset.day;
+                    editRow.querySelector('.start-input').value = row.dataset.start;
+                    editRow.querySelector('.end-input').value = row.dataset.end;
+                    editRow.querySelector('.desc-input').value = row.dataset.desc;
+
+                    // Set form action
+                    editRow.querySelector('form').action = `/personal_calendar/edit/${pk}/`;
+
+                    // Update form action dynamically
+                    // editRow.querySelector('#edit-form').action = `/personal_calendar/edit/${pk}/`;
+
+                    row.after(editRow); // Insert after the clicked row
+                    row.style.display = 'none'; // Hide original row
+
+                    // Cancel button restores row
+                    editRow.querySelector('.cancel-btn').addEventListener('click', () => {
+                        editRow.remove();
+                        row.style.display = 'table-row';
+                    });
+                });
+            });
+        });
+
+    </script>
+
+{% endblock %}

@@ -1,3 +1,4 @@
+import os
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
@@ -43,11 +44,20 @@ def login_view(request):
 @login_required
 def edit_profile(request):
     profile = request.user.profile
+    old_pic_path = profile.profile_picture.path if profile.profile_picture else None  # store old file reference
+    
     if request.method == 'POST':
         form = ProfileForm(request.POST, request.FILES, instance=profile)
+        
         if form.is_valid():
+            new_pic_uploaded = 'profile_picture' in request.FILES
             form.save()
-            return redirect("users:profile")  # replace with your profile view name
+
+            # delete the old pic when uploaded a new pic
+            if new_pic_uploaded and old_pic_path and os.path.exists(old_pic_path): # if a new image is uploaded AND user already had an image
+                os.remove(old_pic_path)
+
+            return redirect("users:profile") 
     else:
         form = ProfileForm(instance=profile)
     return render(request, 'users/edit_profile.html', {'form': form})

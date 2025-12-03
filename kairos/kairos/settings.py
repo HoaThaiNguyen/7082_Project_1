@@ -54,9 +54,8 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'notifications',
     'authapp',
-    'users',
     'groups',
-    # 'schedules',
+    'personal_calendar',
     # 'tailwind',
     # 'django_browser_reload', # used for live reload
 ]

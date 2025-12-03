@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 def user_profile_pic_path(instance, filename):
-    # store in: media/profile_pics/user_<id>/<filename>
+    # store in: media/username/profile/profile_picture/<filename>
     return f'{instance.user.username}/profile/profile_picture/{filename}'
 
 class Profile(models.Model):
