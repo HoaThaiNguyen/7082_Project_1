@@ -10,7 +10,7 @@ def signup_view(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('events:list')  # redirect to your event dashboard
+            return redirect('events:list')  # redirect to event dashboard
         else:
             messages.error(request, "Invalid signup details. Try again.")
     else:

@@ -38,11 +38,6 @@ def events(request):
     return render(request, 'events/events.html', {'events': events})
 
 
-# def user_events(request):
-#     user = request.user
-#     events = user.event_set.all().values('id', 'name', 'date')
-#     return Response({'events': list(events)})
-
 def availability_calendar(request, event_id):
     event = get_object_or_404(Event, event_id=event_id)
     print("inside availability_calendar view")
@@ -115,6 +110,7 @@ def event_detail(request, event_id):
     }
     return render(request, 'events/event_detail.html', context)
 
+
 @login_required
 def create_event(request):
     if request.method == "POST":
@@ -174,6 +170,7 @@ def delete_event(request, event_id):
     return HttpResponseNotAllowed(["POST"])
 
 
+
 @login_required
 def load_availability(request, event_id):
     event = get_object_or_404(Event, event_id=event_id)
@@ -221,4 +218,3 @@ def save_availability(request, event_id):
         )
 
     return JsonResponse({"success": True})
-

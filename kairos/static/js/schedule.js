@@ -121,20 +121,4 @@ function getCookie(name) {
   return null;
 }
 
-// // Log or POST selected slots
-// function logSelectedSlots(dp) {
-//   const selected = dp.events.list.map(e => ({
-//     start: e.start.toString(),
-//     end: e.end.toString(),
-//   }));
-
-//   fetch(window.location.pathname + "availability/save/", {
-//     method: "POST",
-//     headers: {
-//       "Content-Type": "application/json",
-//       "X-CSRFToken": getCookie("csrftoken"),
-//     },
-//     body: JSON.stringify({ blocks: selected }),
-//   });
-// }
 
