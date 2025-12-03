@@ -20,13 +20,13 @@ jobs:
         python-version: '3.11'
 
     - name: Install dependencies
-      working-directory: ./7082_Project_1
+      working-directory: ./kairos
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
     - name: Run Django tests
-      working-directory: ./7082_Project_1
+      working-directory: ./kairos
       run: |
         python manage.py migrate --noinput
         python manage.py test
