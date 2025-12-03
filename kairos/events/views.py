@@ -30,14 +30,9 @@ def events(request):
         elif sort == "alphabetical-decreasing":
             events = sorted(events, key=lambda x: x.title, reverse=True)
 
-    #print("DEBUG - Events fetched:", events)
+    # print("DEBUG - Events fetched:", events)
     return render(request, 'events/events.html', {'events': events})
 
-
-# def user_events(request):
-#     user = request.user
-#     events = user.event_set.all().values('id', 'name', 'date')
-#     return Response({'events': list(events)})
 
 def availability_calendar(request, event_id):
     event = get_object_or_404(Event, event_id=event_id)
@@ -89,6 +84,7 @@ def event_detail(request, event_id):
     }
     return render(request, 'events/event_detail.html', context)
 
+
 @login_required
 def create_event(request):
     if request.method == "POST":
@@ -115,6 +111,7 @@ def create_event(request):
         )
 
         return redirect("events:event_detail", event_id=event.event_id)
+
 
 @login_required
 def load_availability(request, event_id):
@@ -163,4 +160,3 @@ def save_availability(request, event_id):
         )
 
     return JsonResponse({"success": True})
-
