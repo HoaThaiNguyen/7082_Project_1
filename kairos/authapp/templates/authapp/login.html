@@ -1,0 +1,23 @@
+{% extends 'base_auth.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+
+<div class="grid place-items-center bg-light w-full h-full">
+  <div class="p-8 bg-white rounded-xl shadow-lg max-w-[500px] mx-2 overflow-y-auto max-h-screen">
+    <h1 class="text-3xl font-bold mb-4 text-center">Kairos Login</h1>
+
+    <form method="POST" class="space-y-4">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class=" btn btn-primary">Login</button>
+    </form>
+
+    <p class="text-center mt-4">Don’t have an account? 
+      <a href="{% url 'signup' %}" class="text-primary-100 font-medium hover:underline">Sign Up</a>
+    </p>
+  </div>
+</div>
+
+{% endblock %}

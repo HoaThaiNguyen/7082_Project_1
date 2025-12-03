@@ -12,26 +12,235 @@
     </title>
 
     <link rel="stylesheet" href="{% static 'dist/style.css' %}">
+
+    <!-- For font awesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
     <script src="{% static 'js/main.js' %}" defer></script>
+
+    <!-- Alpine.js -->
+
+    {% csrf_token %}
+    <script>
+        // Grab the CSRF token from the hidden input Django generates
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    </script>
     <title>Layout Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    {% block head %}{% endblock %}
 </head>
+
 <body class="bg-light">
-    <nav class="bg-gradient-to-r from-primary-200 to-secondary p-4 flex flex-row justify-between items-center">
-        <div>
-            <a href="/events" class="text-4xl">🏠</a>
-            <button class="btn-nav">Create Event</button>
-            <button class="btn-nav">Attend Event</button>
+    <nav class="flex-col bg-linear-to-r from-primary-200 to-secondary y p-4 flex sm:flex-row justify-between items-center relative space-y-2 md:space-y-0">
+        <div class="h-full flex items-center space-x-2">
+            <a href="/events" class="md:text-4xl text-2xl"><i class="fa-solid fa-house transition-colors duration-300 text-light hover:text-primary-100"></i></a>
+{#            <button class="btn-nav">Create Event</button>#}
+            <div x-data="createEventComponent()">
+
+                <button @click="$dispatch('open-modal', 
+                { id: 'create-event-modal', action:submitEvent })" class="btn btn-nav">Create Event</button>
+
+                {% include "components/event_modal.html" with id="create-event-modal" title="Create New Event" %}
+
+
+            </div>
+{#            <button class="btn-nav">Attend Event</button>#}
+            <button class="btn-nav"><a href="/groups/" >Groups</a></button>
+
         </div>
         
-        <div class="flex flex-row space-x-4">
-            <a href="/login" class="self-center text-white">Login (temporary link for testing will be removed)</a>
-            <button class="text-4xl cursor-pointer">🔔</button>
-            <div class="w-12 h-12 rounded-full bg-dark cursor-pointer">
+    <div x-data="notificationsComponent()" class="flex flex-row">
+            
+        <div class="flex flex-row space-x-4" id="nav-buttons">
+
+            <button 
+                @click="open = !open; if (open && notifications.length === 0) { load_notifications(); }"
+                class="text-4xl cursor-pointer relative grid place-items-center">
+                
+                <div x-show="has_unread" x-init="hasUnreadNotifications()" class="absolute top-0 right-0 w-3 h-3 rounded-full bg-notify"></div><span class=" md:text-4xl text-2xl"><i class="fa-solid fa-bell text-light transition-colors duration-300 hover:text-primary-100"></i></span>
+            </button>
+                
+               
+                {% include 'components/notifications_panel.html' %}
+                
+                {% comment %} {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}" class="btn-nav">Logout</a>
+              {% else %}
+                <a href="{% url 'login' %}" class="btn-nav">Login</a>
+              {% endif %} {% endcomment %}
         </div>
+            
+            <!-- Hamburger Menu -->
+            <div>
+                <!-- Hamburger icon -->
+                <button 
+                    @click="hamburger_active = !hamburger_active;"                     
+                    id="menu-toggle" class="cursor-pointer align-middle group h-full space-y-2">
+                    <div class="w-8 h-1 group-hover:bg-primary-100 bg-light transition-all duration-300 rounded group-"></div>
+                    <div class="w-8 h-1 group-hover:bg-primary-100 bg-light transition-all duration-300 rounded group-"></div>
+                    <div class="w-8 h-1 group-hover:bg-primary-100 bg-light transition-all duration-300 rounded"></div>
+                </button> 
+
+                <!-- Dropdown Menu -->
+                <div 
+                    x-show="hamburger_active"
+                    x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="opacity-0 transform translate-x-16"
+                    x-transition:enter-end="opacity-100 transform translate-x-0"
+                    x-transition:leave="transition ease-in duration-300"
+                    x-transition:leave-start="opacity-100 transform translate-x-0"
+                    x-transition:leave-end="opacity-0 transform translate-x-16"
+
+                    id="dropdown-menu" 
+                    class="absolute right-3 mt-3 w-48 bg-white shadow-lg rounded-lg z-50"
+                >
+                    <ul class="flex flex-col text-gray-800">
+                        <li><a href="/profile" class="block px-4 py-2 list-none hover:bg-gray-100 rounded-lg transition-colors    duration-300">Profile</a></li>
+                        <li><a href="/settings" class="block px-4 py-2 hover:bg-gray-100 rounded-lg transition-colors duration-300">Settings</a></li>
+                        <li><a href="/logout" class="block px-4 py-2 hover:bg-gray-100 rounded-lg text-red-500 transition-colors duration-300">Logout</a></li>
+                    <ul>
+                    
+                </div>
+                <!-- <div
+                    id="dropdown-menu"
+                    class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg hidden"
+                >
+                    <a href="#" class="block px-4 py-2 hover:bg-gray-100">Profile</a>
+                    <a href="#" class="block px-4 py-2 hover:bg-gray-100">Settings</a>
+                    <a href="#" class="block px-4 py-2 hover:bg-gray-100">Logout</a>
+                </div> -->
+            </div>
+
+        </div>
+        
     </nav>
+
     <main>
         {% block content %}
         {% endblock %}
     </main>
+
+    <script>
+        const createEventComponent = () => ({
+            generateSlug() {
+                const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+                event_id = "";
+                // TODO: Discuss requirements of event_id
+                for (let i = 0; i < 16; i++) {
+                    event_id += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                console.log("event_id: ", event_id);
+                return event_id;
+            },
+            async submitEvent(){
+                const event_id = this.generateSlug()
+                const form = document.getElementById("create_event_form");
+                const formData = new FormData(form);
+                if (!form) {
+                    console.error("Could not find create_event_form");
+                    return;
+                }
+
+                formData.append("event_id", event_id);
+                console.log("FormData: ", formData);
+
+                const response = await fetch("/events/create/", {
+                  method: "POST",
+                  headers: {
+                    "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+                  },
+                  body: formData
+                });
+
+                if (response.redirected) {
+                  window.location.href = response.url;
+                } else {
+                  console.error("Event creation failed");
+                }
+            },
+        });
+        const notificationsComponent = () => ({
+            has_unread: false,
+            hamburger_active: false,
+            open: false,
+            notifications: [],
+            async load_notifications() {
+                const res = await fetch('/notifications/', {method: 'GET', headers: {'X-CSRFToken': csrfToken} });
+                if (res.ok) {
+                    const data = await res.json();
+                    console.log("notifications received", data);
+                    this.notifications = data;
+                } else {
+                    console.error('failed to load notifications');
+                }
+            },
+            async hasUnreadNotifications() {
+                const res = await fetch("/notifications/has-unread-notifications", {method: 'GET', headers: {'X-CSRFToken': csrfToken} });
+                if (res.ok) {
+                    const data = await res.json();
+                    console.log("HAS UNREAD: " +data.has_unread);
+                    this.has_unread = data.has_unread;
+                } else {
+                    console.error("Failed to check if there are any unread notifications");
+                    return false;
+                }
+            },
+            async clearNotifications(notifications) {
+                const res = await fetch("/notifications/clear",
+                {method: "DELETE", headers: {
+                    'X-CSRFToken': csrfToken
+                } });
+                if (res.ok) {
+                    // clear notifications on the frontend side
+                    notifications.splice(0, notifications.length);
+                } else {
+                    console.error("Could not clear notifications");
+                }
+            },
+            async notificationClicked(notification) {
+                try {
+                    // mark notification as read if it isn't currently once clicking on it
+                    if (!notification.is_read) {
+                        const res = await fetch(`/notifications/mark-read/${notification.id}/`,
+                        {method: 'POST', headers: {'X-CSRFToken': csrfToken} });
+
+                        if (res.ok) {
+                            notification.is_read = true // update front end side
+                        } else {
+                            console.error("Failed to mark notification as read");
+                        }
+                    }
+                    // redirect to notification url
+                    window.location.href = notification.url;
+                } catch (err) {
+                    console.error(err);
+                    window.location.href = notification.url;
+                }
+            }
+        });
+    </script>
+
+    <script>
+        function logoutUser() {
+          console.log("Logging out...");
+          localStorage.removeItem('access');
+          localStorage.removeItem('refresh');
+          window.location.href = '/login/';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+          const token = localStorage.getItem('access');
+          const loginLink = document.getElementById('loginLink');
+          const logoutBtn = document.getElementById('logoutBtn');
+
+          if (token) {
+            loginLink.classList.add('hidden');
+            logoutBtn.classList.remove('hidden');
+          } else {
+            loginLink.classList.remove('hidden');
+            logoutBtn.classList.add('hidden');
+          }
+        });
+      </script>
 </body>
 </html>

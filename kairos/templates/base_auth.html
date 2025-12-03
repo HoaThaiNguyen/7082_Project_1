@@ -1,0 +1,71 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Kairos Auth{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'dist/style.css' %}">
+    <script src="https://unpkg.com/alpinejs" defer></script>
+
+    <style>
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(to bottom, #faf5ff, #ede9fe);
+      }
+    </style>
+  </head>
+  <script>
+    document.addEventListener("alpine:init", () => {
+      Alpine.data("authComponent", () => ({
+        username: "",
+        password: "",
+        async login() {
+          if (!this.username || !this.password) {
+            alert("Please enter both username and password");
+            return;
+          }
+    
+          try {
+            const response = await fetch("/api/token/", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                username: this.username,
+                password: this.password
+              }),
+            });
+    
+            const data = await response.json();
+    
+            if (!response.ok) {
+              alert(data.detail || "Login failed. Check your credentials.");
+              return;
+            }
+    
+            localStorage.setItem("access", data.access);
+            localStorage.setItem("refresh", data.refresh);
+    
+            window.location.href = "/events/";
+    
+          } catch (err) {
+            console.error("Login error:", err);
+            alert("Something went wrong. Please try again.");
+          }
+        }
+      }));
+    });
+    </script>
+    
+    
+  <body>
+    {% block content %}{% endblock %}
+  </body>
+</html>

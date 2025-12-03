@@ -1,0 +1,45 @@
+{% extends 'layout.html' %}
+
+{% block title %}My Groups{% endblock %}
+
+{% block content %}
+<section class="min-h-screen flex items-center justify-center bg-gradient-to-b from-light to-white">
+  <div class="w-full max-w-2xl bg-white p-10 rounded-2xl shadow-2xl border border-gray-100">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-3xl font-extrabold text-dark">Your Groups</h1>
+      <a href="{% url 'group_create' %}"
+         class="bg-gradient-to-r from-primary-200 to-secondary text-white px-4 py-2 rounded-lg hover:opacity-90 transition">
+        + New Group
+      </a>
+    </div>
+
+    {% if groups_owned or groups_member %}
+      {% if groups_owned %}
+        <h2 class="text-lg font-semibold mb-2">Groups you own</h2>
+        <ul class="mb-6 space-y-2">
+          {% for group in groups_owned %}
+            <li class="border rounded-lg px-4 py-2 hover:bg-gray-50">
+              <a href="{% url 'group_detail' group.id %}" class="font-medium">{{ group.name }}</a>
+              <span class="text-sm text-gray-500">({{ group.members.count }} members)</span>
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+      {% if groups_member %}
+        <h2 class="text-lg font-semibold mb-2">Groups you’re a member of</h2>
+        <ul class="space-y-2">
+          {% for group in groups_member %}
+            <li class="border rounded-lg px-4 py-2 hover:bg-gray-50">
+              <a href="{% url 'group_detail' group.id %}" class="font-medium">{{ group.name }}</a>
+              <span class="text-sm text-gray-500">({{ group.members.count }} members)</span>
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% else %}
+      <p class="text-gray-500">You’re not in any groups yet. Create one to start inviting people!</p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

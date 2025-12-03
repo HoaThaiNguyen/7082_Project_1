@@ -1,0 +1,133 @@
+{% extends 'layout.html' %}
+
+{% block title %}{{ event.title }}{% endblock %}
+<p>{{ event.body }}</p>
+
+{% block content %}
+<div x-data='EventComponent(
+    { 
+        event_id: "{{event.event_id}}", 
+    }
+)' class="relative max-w-3xl mx-auto mt-10 bg-white shadow p-8 rounded-xl">
+
+    <!-- Allow the creator to delete the event only -->
+    {% if user == event.creator %}
+
+        {% include '../components/modal.html' with id="deleteEventModal" title="Delete event?" content="Warning, all the event data will be lost and you will not be able to get it back!" %}
+
+        <button @click="$dispatch('open-modal', 
+        { id: 'deleteEventModal', action:() => deleteEvent() })" class="cursor-pointer absolute top-0 right-0"><i class="text-4xl text-red-500 fa-solid fa-trash-can"></i></button>
+    {% endif %}
+   
+    <h1 class="text-3xl font-bold mb-2 text-dark">{{ event.title }}</h1>
+    <p class="text-gray-700 mb-4">{{ event.body }}</p>
+
+    <p class="text-sm text-gray-500 mb-8">
+        Date: {{ event.date }}
+    </p>
+
+    <p class="text-sm text-gray-500 mb-8">
+        Start: {{ event.start_date }} at {{ event.start_time }}
+    </p>
+    <p class="text-sm text-gray-500 mb-8">
+       End: {{ event.end_date }} at {{ event.end_time }}
+    </p>
+
+    <h4>Share the link to your friends: http://kairos.com/{{ event.event_id }}</h4>
+
+    <!-- RSVP Buttons -->
+    <div class="flex space-x-4 mb-10">
+        <a href="{% url 'events:rsvp_yes' event.event_id %}"
+           class="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+            ✔ I'm coming
+        </a>
+
+        <a href="{% url 'events:rsvp_no' event.event_id %}"
+           class="px-5 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+            ✖ Can't make it
+        </a>
+    </div>
+    <div class="mb-10">
+    <button class="btn-nav"><a href="{% url 'events:schedule' event.event_id %}" class="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">📅 Set My Availability</a></button>
+    </div>    
+
+ 
+    <hr class="my-10">
+
+    <!-- RSVP Dashboard -->
+    <h2 class="text-2xl font-bold text-dark mb-4">Attendance Dashboard</h2>
+
+    <!-- YES -->
+    <div class="mb-8">
+        <h3 class="text-xl font-semibold text-green-600 mb-2">
+            Coming ({{ yes.count }})
+        </h3>
+
+        {% if yes %}
+            <ul class="list-disc list-inside text-gray-700">
+                {% for p in yes %}
+                    <li>{{ p.user.username }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-gray-500">No one has responded "Yes" yet.</p>
+        {% endif %}
+    </div>
+
+    <!-- NO -->
+    <div class="mb-8">
+        <h3 class="text-xl font-semibold text-red-600 mb-2">
+            Not Coming ({{ no.count }})
+        </h3>
+
+        {% if no %}
+            <ul class="list-disc list-inside text-gray-700">
+                {% for p in no %}
+                    <li>{{ p.user.username }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-gray-500">No one has responded "No" yet.</p>
+        {% endif %}
+    </div>
+
+    <!-- NOT RESPONDED -->
+    <div class="mb-8">
+        <h3 class="text-xl font-semibold text-gray-600 mb-2">
+            No Response ({{ not_responded.count }})
+        </h3>
+
+        {% if not_responded %}
+            <ul class="list-disc list-inside text-gray-700">
+                {% for u in not_responded %}
+                    <li>{{ u.username }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-gray-500">Everyone has responded.</p>
+        {% endif %}
+    </div>
+
+    <hr class="my-10">
+
+    <a href="/events/" class="text-primary-200 underline hover:text-primary-100">
+        ← Back to Events
+    </a>
+
+</div>
+<script>
+    const EventComponent = (data) => ({
+        event_id: data.event_id,
+        async deleteEvent() {
+            console.log(csrfToken)
+            console.log("Attempting to delete event")
+            const res = await fetch(`/events/${this.event_id}/delete/`, {method: 'POST', headers: {'X-CSRFToken': csrfToken} });
+            if (!res.ok) {
+                alert("Could not delete event: " + res.status)
+            } else {
+                window.location.href = "/events"
+            }
+        },
+    });
+</script>
+{% endblock %}
