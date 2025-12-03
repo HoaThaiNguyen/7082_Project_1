@@ -39,13 +39,11 @@ class CreateEventTests(TestCase):
         self.assertEqual(event.end_time.isoformat(), "20:00:00")
 
     def test_events_list(self):
-        test_user = User.objects.create_user(username='event_tester1', password='pass12345')
-
         Event.objects.create(
             title="Test A",
             body="desc",
             event_id="a",
-            creator=test_user,
+            creator=self.user,
             start_date=datetime(2025, 1, 1).date(),
             start_time=datetime(2025, 1, 1, 10),
             end_date=datetime(2025, 1, 1).date(),
@@ -57,13 +55,11 @@ class CreateEventTests(TestCase):
         self.assertContains(response, "Test A")
 
     def test_event_search_filter(self):
-        test_user = User.objects.create_user(username='event_tester2', password='pass12345')
-
         Event.objects.create(
             title="Soccer Night",
             body="fun",
             event_id="soccer",
-            creator=test_user,
+            creator=self.user,
             start_date=datetime(2025, 1, 1).date(),
             start_time=datetime(2025, 1, 1, 10),
             end_date=datetime(2025, 1, 1).date(),
@@ -74,7 +70,7 @@ class CreateEventTests(TestCase):
             title="Study Group",
             body="study",
             event_id="study",
-            creator=test_user,
+            creator=self.user,
             start_date=datetime(2025, 1, 1).date(),
             start_time=datetime(2025, 1, 1, 10),
             end_date=datetime(2025, 1, 1).date(),
