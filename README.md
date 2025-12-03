@@ -1,7 +1,5 @@
 # Kairos
 
-A concise and descriptive title for your project
-
 ## Course Information
 
 Course: COMP7082 – Software Engineering  
